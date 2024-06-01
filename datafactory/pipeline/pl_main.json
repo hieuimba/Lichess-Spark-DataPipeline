@@ -63,7 +63,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_process_data",
+									"referenceName": "pl_process_all",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
