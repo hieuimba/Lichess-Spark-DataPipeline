@@ -5,6 +5,7 @@
 This project is a data pipeline designed to extract and parse the monthly chess game datasets from the Lichess database. 
 It utilizes Spark on Azure Databricks for efficient large-scale data processing.
 The processed chess game data is used in my Guess the ELO game, where players aim to guess the ELO (rating) of a random chess game.
+Due to the complexity of using Spark to efficiently handle the PGN and ZST format, I have written a post to describe the solution process here.
 
 ## Architecture
 The data pipeline uses Azure Data Factory to orchestrate the data processing steps and Spark for data processing. Here are the detailed steps:
