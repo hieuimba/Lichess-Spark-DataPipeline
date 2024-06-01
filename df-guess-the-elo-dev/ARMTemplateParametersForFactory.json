@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "df-guess-the-elo-dev"
+		},
+		"ls_cosmosdb_connectionString": {
+			"value": ""
+		},
+		"ls_datalakestorage_accountKey": {
+			"value": ""
+		},
+		"ls_datalakestorage_properties_typeProperties_url": {
+			"value": "https://guesstheelostoragedev.dfs.core.windows.net/"
+		},
+		"ls_keyvault_properties_typeProperties_baseUrl": {
+			"value": "https://kv-guess-the-elo-dev.vault.azure.net/"
+		},
+		"ls_lichess_database_properties_typeProperties_url": {
+			"value": "https://database.lichess.org/standard/"
+		},
+		"tr_main_weekly_properties_pl_main_parameters_Month": {
+			"value": "@{formatDateTime(pipeline().TriggerTime,'yyyy-MM')}"
+		}
+	}
+}
