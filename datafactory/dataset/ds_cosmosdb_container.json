@@ -1,0 +1,24 @@
+{
+	"name": "ds_cosmosdb_container",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_cosmosdb",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"containerName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": {
+				"value": "@dataset().containerName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

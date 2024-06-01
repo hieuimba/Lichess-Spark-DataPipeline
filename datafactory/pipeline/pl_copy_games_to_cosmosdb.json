@@ -1,0 +1,152 @@
+{
+	"name": "pl_copy_games_to_cosmosdb",
+	"properties": {
+		"activities": [
+			{
+				"name": "Gold Games to Cosmos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('Games/',pipeline().parameters.Month)",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": true
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "upsert",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "GameID",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['GameID']"
+								}
+							},
+							{
+								"source": {
+									"name": "Moves",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Moves']"
+								}
+							},
+							{
+								"source": {
+									"name": "WhiteElo",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['WhiteElo']"
+								}
+							},
+							{
+								"source": {
+									"name": "BlackElo",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['BlackElo']"
+								}
+							},
+							{
+								"source": {
+									"name": "TimeControl",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TimeControl']"
+								}
+							},
+							{
+								"source": {
+									"name": "Event",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Event']"
+								}
+							},
+							{
+								"source": {
+									"name": "EloRange",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['EloRange']"
+								}
+							},
+							{
+								"source": {
+									"name": "ID",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['id']"
+								}
+							},
+							{
+								"source": {
+									"name": "Site"
+								},
+								"sink": {
+									"path": "$['Site']"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_datalake_gold_layer_games",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_cosmosdb_container",
+						"type": "DatasetReference",
+						"parameters": {
+							"containerName": "games"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"Month": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-28T05:36:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

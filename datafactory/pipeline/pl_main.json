@@ -1,0 +1,91 @@
+{
+	"name": "pl_main",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get File List from Lichess",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://database.lichess.org/standard/list.txt"
+				}
+			},
+			{
+				"name": "If Current Month in File list",
+				"description": "If Current Month in File list then Execute pl_main ",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get File List from Lichess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(string(activity('Get File List from Lichess').output.Response), pipeline().parameters.Month)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "@concat('Current Month: ', pipeline().parameters.Month, ' Not in File list: ', string(activity('Get File List from Lichess').output.Response))",
+									"type": "Expression"
+								},
+								"errorCode": "500"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "pl_main",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_process_data",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Month": {
+										"value": "@pipeline().parameters.Month",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Month": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-28T23:59:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

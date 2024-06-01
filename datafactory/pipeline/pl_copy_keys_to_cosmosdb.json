@@ -1,0 +1,92 @@
+{
+	"name": "pl_copy_keys_to_cosmosdb",
+	"properties": {
+		"activities": [
+			{
+				"name": "Gold Key to Cosmos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "Keys/Consolidated",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "upsert",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Event']"
+								},
+								"sink": {
+									"path": "Event"
+								}
+							},
+							{
+								"source": {
+									"path": "GameIDs"
+								},
+								"sink": {
+									"path": "GameIDs"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ID']"
+								},
+								"sink": {
+									"path": "id"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_datalake_gold_layer_keys",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_cosmosdb_container",
+						"type": "DatasetReference",
+						"parameters": {
+							"containerName": "keys"
+						}
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-05-28T05:36:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

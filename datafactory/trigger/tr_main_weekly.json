@@ -1,0 +1,38 @@
+{
+	"name": "tr_main_weekly",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_main",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Month": "@{formatDateTime(pipeline().TriggerTime,'yyyy-MM')}"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2024-05-28T23:47:00",
+				"timeZone": "Central Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						8
+					],
+					"weekDays": [
+						"Sunday"
+					]
+				}
+			}
+		}
+	}
+}

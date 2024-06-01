@@ -1,0 +1,41 @@
+{
+	"name": "pl_parse_games_in_databricks",
+	"properties": {
+		"activities": [
+			{
+				"name": "run_all",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/hieuimba@gmail.com/final/0-run-all",
+					"baseParameters": {
+						"month": {
+							"value": "@pipeline().parameters.Month",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"Month": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-28T23:24:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

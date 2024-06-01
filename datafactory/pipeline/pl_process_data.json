@@ -1,0 +1,118 @@
+{
+	"name": "pl_process_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "pl_download_games_to_raw",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_download_games_to_raw",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Month": {
+							"value": "@pipeline().parameters.Month",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "pl_parse_games_in_databricks",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_download_games_to_raw",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_parse_games_in_databricks",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Month": {
+							"value": "@pipeline().parameters.Month",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "pl_copy_games_to_cosmosdb",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_parse_games_in_databricks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_copy_games_to_cosmosdb",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Month": {
+							"value": "@pipeline().parameters.Month",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "pl_copy_keys_to_cosmosdb",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_copy_games_to_cosmosdb",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_copy_keys_to_cosmosdb",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"parameters": {
+			"Month": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-29T00:54:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
