@@ -54,7 +54,7 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "pl_main",
+							"name": "pl_process_all",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
