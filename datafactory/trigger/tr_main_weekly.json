@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Month": "@{formatDateTime(trigger().scheduledTime,'yyyy-MM')}"
+					"Month": "@{formatDateTime(trigger().startTime,'yyyy-MM')}"
 				}
 			}
 		],
