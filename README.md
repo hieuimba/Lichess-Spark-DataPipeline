@@ -16,7 +16,7 @@ The data pipeline uses Azure Data Factory to orchestrate the data processing ste
 4. Sample Games: An Azure Databricks notebook samples the parsed data. This is done to collect games that meet the requirements of the Guess the ELO game.
 5. Copy Games: The data is again copied from Azure Data Lake Storage Gen2 to Cosmos DB for application usage
 
-![chess-app - Page 2 (2)](https://github.com/hieuimba/Lichess-Spark-DataPipeline/assets/89481020/8b36b059-25fc-4b7f-9597-d1cdf8b9655d)
+![chess-app - Page 2 (3)](https://github.com/hieuimba/Lichess-Spark-DataPipeline/assets/89481020/1ea09574-6eea-4777-8460-1e9942227e24)
 
 ## Technology Stack
 
