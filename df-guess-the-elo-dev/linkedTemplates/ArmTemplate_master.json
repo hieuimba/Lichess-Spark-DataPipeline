@@ -29,7 +29,7 @@
 		},
 		"tr_main_weekly_properties_pl_main_parameters_Month": {
 			"type": "string",
-			"defaultValue": "@{formatDateTime(pipeline().TriggerTime,'yyyy-MM')}"
+			"defaultValue": "@{formatDateTime(trigger().startTime,'yyyy-MM')}"
 		},
 		"containerUri": {
 			"type": "string",

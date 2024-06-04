@@ -21,7 +21,7 @@
 			"value": "https://database.lichess.org/standard/"
 		},
 		"tr_main_weekly_properties_pl_main_parameters_Month": {
-			"value": "@{formatDateTime(pipeline().TriggerTime,'yyyy-MM')}"
+			"value": "@{formatDateTime(trigger().startTime,'yyyy-MM')}"
 		}
 	}
 }
