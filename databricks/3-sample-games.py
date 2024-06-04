@@ -19,6 +19,8 @@ print(f"Sampling games from: {silver_dir} \n to {gold_games_dir}")
 
 # COMMAND ----------
 
+# This notebook is specific to Guess the ELO, can be omitted if not needed
+
 from pyspark.sql.functions import col, lit, min, concat, row_number, max
 from pyspark.sql import Window
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -132,6 +134,6 @@ df = df.groupBy("Event").agg(collect_list(struct("Month", "Range")).alias("GameI
 df = df.withColumn("ID", col("Event"))
 
 # Write consolidated keys to gold dir
-df.write.mode("Overwrite").json(gold_keys_consolidated_dir)
+df.write.mode("overwrite").json(gold_keys_consolidated_dir)
 
 display(df)

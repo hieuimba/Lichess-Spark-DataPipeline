@@ -77,7 +77,7 @@ def parse_games(file_name):
     df = df.groupBy("GameID").pivot("Key", col_list).agg(first("Value"))
     return df
 
-def filter_games(df):
+def filter_games(df): 
     # Filter out uncomplete games due to chunking
     df = df.filter((col("GameID") > 0) & (col("GameID") < df.count() - 1))
 
@@ -156,7 +156,7 @@ def write_file(df):
 def process_file(file_name):
     # Process games in the following order
     df = parse_games(file_name)
-    df = filter_games(df)
+    df = filter_games(df) # This function is specific to Guess the ELO, can be omitted if needed
     write_file(df)
 
 # COMMAND ----------
