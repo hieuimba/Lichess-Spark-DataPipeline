@@ -19,7 +19,7 @@ print(f"Sampling games from: {silver_dir} \n to {gold_games_dir}")
 
 # COMMAND ----------
 
-# This notebook is specific to Guess the ELO, can be omitted if not needed
+# This function samples games for Guess the ELO, can be omitted if needed
 
 from pyspark.sql.functions import col, lit, min, concat, row_number, max
 from pyspark.sql import Window
@@ -29,6 +29,7 @@ from pyspark.sql import DataFrame
 df = spark.read.parquet(silver_dir)
 
 grouped_df = df.groupBy("Event", "EloRange").count()
+grouped_df = grouped_df.where(col('count') >= 100)
 
 # Get the distinct event groups as a list
 event_groups = grouped_df.select("Event").distinct().collect()
@@ -43,6 +44,7 @@ def process_event(event: str) -> DataFrame:
 
     # Get the smallest count of games across all EloRanges 
     min_count = df_group.agg(min(col('count'))).collect()[0][0]
+    min_count = 2000 if min_count > 2000 else min_count
 
     # Calculate the sample fraction - ensure that counts across all EloRanges are equal to the min_count
     df_group = df_group.withColumn('sample_fraction', lit(min_count) / col('count'))
@@ -70,7 +72,6 @@ with ThreadPoolExecutor() as executor:
             all_df = all_df.union(result_df)
         except Exception as exc:
             print(exc)
-
 
 # Add a 'NumericGameID' column using the row_number function
 window_spec = Window.orderBy('Event')
