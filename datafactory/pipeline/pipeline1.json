@@ -54,7 +54,7 @@
 				"typeProperties": {
 					"method": "POST",
 					"url": {
-						"value": "@activity('Lookup URL').output",
+						"value": "@activity('Lookup URL').output.firstRow",
 						"type": "Expression"
 					},
 					"body": {
