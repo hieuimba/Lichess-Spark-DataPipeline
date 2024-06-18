@@ -21,7 +21,7 @@
 						"type": "Expression"
 					},
 					"body": {
-						"value": "@pipeline().parameters.Month",
+						"value": "{'Month':'123'}",
 						"type": "Expression"
 					}
 				}
