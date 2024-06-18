@@ -1,0 +1,28 @@
+{
+	"name": "ds_la_update_blob_url",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalakestorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "la-update-blob-url.txt",
+				"fileSystem": "config"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "abcv",
+				"type": "String"
+			}
+		]
+	}
+}
