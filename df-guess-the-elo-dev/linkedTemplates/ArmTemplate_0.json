@@ -211,7 +211,6 @@
 				},
 				"schema": [
 					{
-						"name": "abcv",
 						"type": "String"
 					}
 				]
