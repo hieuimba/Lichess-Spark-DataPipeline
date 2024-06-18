@@ -29,7 +29,8 @@
 					"dataset": {
 						"referenceName": "ds_la_update_blob_url",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
