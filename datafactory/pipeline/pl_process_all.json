@@ -104,37 +104,6 @@
 					},
 					"waitOnCompletion": true
 				}
-			},
-			{
-				"name": "Update Config",
-				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "pl_copy_keys_to_cosmosdb",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "POST",
-					"url": {
-						"value": "@pipeline().globalParameters.la_update_blob_url",
-						"type": "Expression"
-					},
-					"body": {
-						"value": "{\n    \"Month\": \"@{pipeline().parameters.Month}\"\n}\n",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
