@@ -525,6 +525,77 @@
 							"waitOnCompletion": true,
 							"parameters": {}
 						}
+					},
+					{
+						"name": "Lookup URL",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "pl_copy_keys_to_cosmosdb",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "ds_la_update_blob_url",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "Update Config",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Lookup URL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"url": {
+								"value": "@activity('Lookup URL').output.firstRow.Prop_0",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "{\n    \"Month\": \"@{pipeline().parameters.Month}\"\n}\n",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -542,7 +613,8 @@
 				"[concat(variables('factoryId'), '/pipelines/pl_download_games_to_raw')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_parse_games_in_databricks')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_copy_games_to_cosmosdb')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_copy_keys_to_cosmosdb')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_copy_keys_to_cosmosdb')]",
+				"[concat(variables('factoryId'), '/datasets/ds_la_update_blob_url')]"
 			]
 		},
 		{
@@ -637,6 +709,39 @@
 						"fileSystem": "raw"
 					}
 				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalakestorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_la_update_blob_url')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalakestorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "la-update-blob-url.txt",
+						"fileSystem": "config"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "abcv",
+						"type": "String"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_datalakestorage')]"
@@ -759,50 +864,6 @@
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Web1",
-						"type": "WebActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"method": "POST",
-							"headers": {},
-							"url": {
-								"value": "@pipeline().globalParameters.la-update-blob-url",
-								"type": "Expression"
-							},
-							"body": {
-								"value": "{}",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"Month": {
-						"type": "string"
-					}
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		}
