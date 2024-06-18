@@ -3,17 +3,7 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "pl_main",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"Month": "@{formatDateTime(trigger().startTime,'yyyy-MM')}"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
