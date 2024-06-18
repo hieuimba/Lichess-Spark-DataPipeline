@@ -30,7 +30,7 @@
 						"referenceName": "ds_la_update_blob_url",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": false
+					"firstRowOnly": true
 				}
 			},
 			{
@@ -55,7 +55,7 @@
 				"typeProperties": {
 					"method": "POST",
 					"url": {
-						"value": "@activity('Lookup URL').output.firstRow",
+						"value": "@activity('Lookup URL').output.firstRow.Prop_0",
 						"type": "Expression"
 					},
 					"body": {
