@@ -18,11 +18,6 @@
 			"firstRowAsHeader": false,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "abcv",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
