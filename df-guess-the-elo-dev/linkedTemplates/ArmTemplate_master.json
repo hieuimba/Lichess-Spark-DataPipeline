@@ -27,10 +27,6 @@
 			"type": "string",
 			"defaultValue": "https://database.lichess.org/standard/"
 		},
-		"tr_main_weekly_properties_pl_main_parameters_Month": {
-			"type": "string",
-			"defaultValue": "@{formatDateTime(trigger().startTime,'yyyy-MM')}"
-		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -72,9 +68,6 @@
 					},
 					"ls_lichess_database_properties_typeProperties_url": {
 						"value": "[parameters('ls_lichess_database_properties_typeProperties_url')]"
-					},
-					"tr_main_weekly_properties_pl_main_parameters_Month": {
-						"value": "[parameters('tr_main_weekly_properties_pl_main_parameters_Month')]"
 					}
 				}
 			},

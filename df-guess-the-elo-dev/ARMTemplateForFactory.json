@@ -26,10 +26,6 @@
 		"ls_lichess_database_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://database.lichess.org/standard/"
-		},
-		"tr_main_weekly_properties_pl_main_parameters_Month": {
-			"type": "string",
-			"defaultValue": "@{formatDateTime(trigger().startTime,'yyyy-MM')}"
 		}
 	},
 	"variables": {
@@ -370,105 +366,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_lichess_database')]",
 				"[concat(variables('factoryId'), '/datasets/ds_datalake_raw_layer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_main')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Get File List from Lichess",
-						"type": "WebActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"method": "GET",
-							"headers": {},
-							"url": "https://database.lichess.org/standard/list.txt"
-						}
-					},
-					{
-						"name": "If Current Month in File list",
-						"description": "If Current Month in File list then Execute pl_main ",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Get File List from Lichess",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@contains(string(activity('Get File List from Lichess').output.Response), pipeline().parameters.Month)",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "Fail",
-									"type": "Fail",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "@concat('Current Month: ', pipeline().parameters.Month, ' Not in File list: ', string(activity('Get File List from Lichess').output.Response))",
-											"type": "Expression"
-										},
-										"errorCode": "500"
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "pl_process_all",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_process_all",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"Month": {
-												"value": "@pipeline().parameters.Month",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"Month": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-28T23:59:33Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_process_all')]"
 			]
 		},
 		{
@@ -866,73 +763,33 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/tr_main_weekly')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "pl_main",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"Month": "[parameters('tr_main_weekly_properties_pl_main_parameters_Month')]"
-						}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Week",
-						"interval": 1,
-						"startTime": "2024-05-28T23:47:00",
-						"timeZone": "Central Standard Time",
-						"schedule": {
-							"minutes": [
-								0
-							],
-							"hours": [
-								8
-							],
-							"weekDays": [
-								"Sunday"
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_main')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_process_all_copy1')]",
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "pl_download_games_to_raw",
-						"type": "ExecutePipeline",
+						"name": "Web1",
+						"type": "WebActivity",
 						"dependsOn": [],
 						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_download_games_to_raw",
-								"type": "PipelineReference"
+							"method": "POST",
+							"headers": {},
+							"url": {
+								"value": "@pipeline().globalParameters.la-update-blob-url",
+								"type": "Expression"
 							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"Month": {
-									"value": "@pipeline().parameters.Month",
-									"type": "Expression"
-								}
+							"body": {
+								"value": "{}",
+								"type": "Expression"
 							}
 						}
 					}
@@ -945,12 +802,9 @@
 						"type": "string"
 					}
 				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-29T00:54:09Z"
+				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_download_games_to_raw')]"
-			]
+			"dependsOn": []
 		}
 	]
 }

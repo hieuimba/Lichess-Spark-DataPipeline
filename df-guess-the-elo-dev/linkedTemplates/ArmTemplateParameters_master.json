@@ -20,9 +20,6 @@
 		"ls_lichess_database_properties_typeProperties_url": {
 			"value": "https://database.lichess.org/standard/"
 		},
-		"tr_main_weekly_properties_pl_main_parameters_Month": {
-			"value": "@{formatDateTime(trigger().startTime,'yyyy-MM')}"
-		},
 		"containerUri": {
 			"value": ""
 		},
