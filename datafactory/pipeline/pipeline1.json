@@ -17,11 +17,11 @@
 				"typeProperties": {
 					"method": "POST",
 					"url": {
-						"value": "@pipeline().globalParameters.la-update-blob-url",
+						"value": "@pipeline().globalParameters.la_update_blob_url",
 						"type": "Expression"
 					},
 					"body": {
-						"value": "{}",
+						"value": "@pipeline().parameters.Month",
 						"type": "Expression"
 					}
 				}
