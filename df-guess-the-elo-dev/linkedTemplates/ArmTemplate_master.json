@@ -7,9 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "df-guess-the-elo-dev"
 		},
-		"ls_cosmosdb_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
+		"ls_cosmosdb_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "cosmosdb-connection-string"
 		},
 		"ls_datalakestorage_properties_typeProperties_url": {
 			"type": "string",
@@ -50,9 +50,6 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"ls_cosmosdb_connectionString": {
-						"value": "[parameters('ls_cosmosdb_connectionString')]"
-					},
 					"ls_datalakestorage_properties_typeProperties_url": {
 						"value": "[parameters('ls_datalakestorage_properties_typeProperties_url')]"
 					},
@@ -61,6 +58,9 @@
 					},
 					"ls_lichess_database_properties_typeProperties_url": {
 						"value": "[parameters('ls_lichess_database_properties_typeProperties_url')]"
+					},
+					"ls_cosmosdb_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('ls_cosmosdb_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},

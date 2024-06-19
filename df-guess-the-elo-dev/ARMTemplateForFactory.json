@@ -7,9 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "df-guess-the-elo-dev"
 		},
-		"ls_cosmosdb_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
+		"ls_cosmosdb_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "cosmosdb-connection-string"
 		},
 		"ls_datalakestorage_properties_typeProperties_url": {
 			"type": "string",
@@ -780,10 +780,19 @@
 				"annotations": [],
 				"type": "CosmosDb",
 				"typeProperties": {
-					"connectionString": "[parameters('ls_cosmosdb_connectionString')]"
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ls_keyvault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('ls_cosmosdb_properties_typeProperties_connectionString_secretName')]"
+					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_keyvault')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ls_databricks')]",
