@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
 		},
-		"ls_datalakestorage_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'ls_datalakestorage'"
-		},
 		"ls_datalakestorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://guesstheelostoragedev.dfs.core.windows.net/"
@@ -56,9 +52,6 @@
 					},
 					"ls_cosmosdb_connectionString": {
 						"value": "[parameters('ls_cosmosdb_connectionString')]"
-					},
-					"ls_datalakestorage_accountKey": {
-						"value": "[parameters('ls_datalakestorage_accountKey')]"
 					},
 					"ls_datalakestorage_properties_typeProperties_url": {
 						"value": "[parameters('ls_datalakestorage_properties_typeProperties_url')]"

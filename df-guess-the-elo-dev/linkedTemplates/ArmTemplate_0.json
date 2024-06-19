@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_cosmosdb'"
 		},
-		"ls_datalakestorage_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'ls_datalakestorage'"
-		},
 		"ls_datalakestorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://guesstheelostoragedev.dfs.core.windows.net/"
@@ -53,11 +49,7 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "[parameters('ls_datalakestorage_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('ls_datalakestorage_accountKey')]"
-					}
+					"url": "[parameters('ls_datalakestorage_properties_typeProperties_url')]"
 				}
 			},
 			"dependsOn": []

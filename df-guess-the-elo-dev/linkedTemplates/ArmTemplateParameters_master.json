@@ -8,9 +8,6 @@
 		"ls_cosmosdb_connectionString": {
 			"value": ""
 		},
-		"ls_datalakestorage_accountKey": {
-			"value": ""
-		},
 		"ls_datalakestorage_properties_typeProperties_url": {
 			"value": "https://guesstheelostoragedev.dfs.core.windows.net/"
 		},
