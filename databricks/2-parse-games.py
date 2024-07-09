@@ -134,10 +134,10 @@ def filter_games(df):
         when(col("Result") == "1/2-1/2", "Draw")
         .when((col("Result") == "1-0") & (col("Termination") == "Time forfeit"), "White wins on time")
         .when((col("Result") == "0-1") & (col("Termination") == "Time forfeit"), "Black wins on time")
-        .when((col("Result") == "1-0") & (col("Termination") == "Normal") & regexp_replace(col("Moves"), r"\[\%eval #\d+\]", "").contains("#"), "White wins by checkmate")
-        .when((col("Result") == "0-1") & (col("Termination") == "Normal") & regexp_replace(col("Moves"), r"\[\%eval #\d+\]", "").contains("#"), "Black wins by checkmate")
-        .when((col("Result") == "1-0") & (col("Termination") == "Normal") & ~regexp_replace(col("Moves"), r"\[\%eval #\d+\]", "").contains("#"), "White wins by resignation")
-        .when((col("Result") == "0-1") & (col("Termination") == "Normal") & ~regexp_replace(col("Moves"), r"\[\%eval #\d+\]", "").contains("#"), "Black wins by resignation")
+        .when((col("Result") == "1-0") & (col("Termination") == "Normal") & when(regexp_extract(col("Moves"), r"#\s", 0) != "", True), "White wins by checkmate")
+        .when((col("Result") == "0-1") & (col("Termination") == "Normal") & when(regexp_extract(col("Moves"), r"#\s", 0) != "", True), "Black wins by checkmate")
+        .when((col("Result") == "1-0") & (col("Termination") == "Normal") & when(regexp_extract(col("Moves"), r"#\s", 0) == "", True), "White wins by resignation")
+        .when((col("Result") == "0-1") & (col("Termination") == "Normal") & when(regexp_extract(col("Moves"), r"#\s", 0) == "", True), "Black wins by resignation")
         .otherwise("End of Game")
     )
     df = df.withColumn("Moves", concat(col("Moves"), lit(" { "), col("ResultComment"), lit(" }")))
@@ -156,7 +156,7 @@ def write_file(df):
 def process_file(file_name):
     # Process games in the following order
     df = parse_games(file_name)
-    df = filter_games(df) # This function filters games for Guess the ELO, can be omitted if needed
+    df = filter_games(df) # Filters games for Guess the ELO
     write_file(df)
 
 # COMMAND ----------

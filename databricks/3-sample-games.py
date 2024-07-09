@@ -19,8 +19,6 @@ print(f"Sampling games from: {silver_dir} \n to {gold_games_dir}")
 
 # COMMAND ----------
 
-# This function samples games for Guess the ELO, can be omitted if needed
-
 from pyspark.sql.functions import col, lit, min, concat, row_number, max
 from pyspark.sql import Window
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -85,6 +83,7 @@ all_df = all_df.withColumn('ID', col('GameID'))
 all_df.write.partitionBy('Event','EloRange').mode("overwrite").parquet(gold_games_dir)
 
 # Display result
+all_df = spark.read.parquet(gold_games_dir)
 all_df_result = all_df.groupBy("Event", "EloRange").count()
 display(all_df_result)
 
