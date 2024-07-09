@@ -83,34 +83,11 @@
 				}
 			},
 			{
-				"name": "pl_copy_keys_to_cosmosdb",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "pl_copy_games_to_cosmosdb",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pl_copy_keys_to_cosmosdb",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
 				"name": "Lookup URL",
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "pl_copy_keys_to_cosmosdb",
+						"activity": "pl_copy_games_to_cosmosdb",
 						"dependencyConditions": [
 							"Succeeded"
 						]
