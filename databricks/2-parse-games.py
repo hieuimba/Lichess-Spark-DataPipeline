@@ -85,22 +85,34 @@ def filter_games(df):
     df = df.filter(
         (col("Moves").contains("eval")) & 
         (col("Event") != "Rated Correspondence game") & 
+        (~col("Event").contains("UltraBullet")) &
         (col("Termination").isin(["Normal", "Time forfeit"])) & 
         ((col("WhiteTitle").isNull()) | (col("WhiteTitle") != "BOT")) &
         ((col("BlackTitle").isNull()) | (col("BlackTitle") != "BOT"))
     )
+    # Cast Elo columns to int
+    columns_to_cast = ["WhiteElo", "BlackElo", "WhiteRatingDiff", "BlackRatingDiff"]
+    for column in columns_to_cast:
+        df = df.withColumn(column, col(column).cast("int"))
 
+    # Calculate the difference between White and Black's ELO
+    df = df.withColumn("EloDiff", abs(col("WhiteElo") - col("BlackElo")))
+
+    # Filter based on "EloDiff" and "EloSwing"
+    df = df.filter(
+        (col("EloDiff") <= 100) & 
+        col("WhiteRatingDiff").isNotNull() &
+        col("BlackRatingDiff").isNotNull() &
+        (abs(col("WhiteRatingDiff")) <= 20) &  
+        (abs(col("BlackRatingDiff")) <= 20)  
+    )
+    
     # Find the number of moves using the find_number_of_moves UDF
     find_number_of_moves_udf = udf(find_number_of_moves, IntegerType())
     df = df.withColumn("NumberOfMoves", find_number_of_moves_udf("Moves"))
 
     # Filter for games with >= 20 moves
     df = df.filter(col("NumberOfMoves") >= 20)
-
-    # Cast Elo columns to int
-    columns_to_cast = ["WhiteElo", "BlackElo", "WhiteRatingDiff", "BlackRatingDiff"]
-    for column in columns_to_cast:
-        df = df.withColumn(column, col(column).cast("int"))
 
     # Calculate AvgElo and round it down to the nearest 300 range
     df = df.withColumn("EloRange", (floor(((col("WhiteElo") + col("BlackElo")) / 2) / 300) * 300).cast("int"))
@@ -109,21 +121,6 @@ def filter_games(df):
     df = df.withColumn("EloRange", when(col("EloRange") <= 300, 0)
                                     .when(col("EloRange") > 3000, 3000)
                                     .otherwise(col("EloRange")))
-
-    # Calculate the difference between White and Black's ELO
-    df = df.withColumn("EloDiff", abs(col("WhiteElo") - col("BlackElo")))
-
-    # Calculate the swing in ELO after the match ends
-    if "WhiteRatingDiff" in df.columns and "BlackRatingDiff" in df.columns:
-        df = df.withColumn("EloSwing", abs(col("WhiteRatingDiff") + col("BlackRatingDiff")))
-    else:
-        df = df.withColumn("EloSwing", lit(None).cast("int"))
-
-    # Filter based on "EloDiff" and "EloSwing"
-    df = df.filter(
-        (col("EloDiff") <= 200) & 
-        (col("EloSwing") <= 50)
-    )
 
     # Add Opening Comment to Moves
     df = df.withColumn("Moves", concat(lit("{ "), col("ECO"), lit(" "),  col("Opening"), lit(" } "), col("Moves")))
