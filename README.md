@@ -2,7 +2,6 @@
 
 ## Description
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
-![chess-app - Page 2 (4)](https://github.com/user-attachments/assets/89c9022f-ee65-4ffc-adc9-438bd2830970)
 
 Liches is a popular chess platform that hosts millions of chess games everyday. In order to use these games for your personal projects, you can download them for free from [the Lichess database](https://database.lichess.org/). However, extracting games from the database can be challenging due to the enormous size of the data files. This project aims to provide a solution in the form of a data pipeline capable of:
 - Downloading and storing the monthly data files
@@ -14,8 +13,8 @@ The pipeline uses Spark on Databricks for efficient large-scale data processing 
 I use the data from this pipeline for my game "Guess The ELO". It's a game where you can test your chess knowledge and intuition by guessing the Elo or rating of a given chess match. If you are interested, feel free to check out the game here and [its repo](https://github.com/hieuimba/Guess-The-ELO) 
 
 ## Architecture
-As shown above, the data pipeline uses Spark for data processing and Azure Data Factory to orchestrate activities. 
-Here are the detailed steps:
+Here is the process diagram for this data pipeline, its main components are Spark Databricks for data processing, Azure Data Factory for orchestration, and ADLS2 for storage.
+![chess-app - Page 2 (4)](https://github.com/user-attachments/assets/89c9022f-ee65-4ffc-adc9-438bd2830970)
 1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to Azure Data Lake Storage Gen2. 
 2. **Decompress File:** The downloaded ZST file is decompressed into PGN format.
 3. **Parse Games:** Spark parses the PGN file, extracting individual chess games and storing them into Parquet format.
