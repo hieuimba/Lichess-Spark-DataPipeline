@@ -3,7 +3,7 @@
 ## Description
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Liches is a popular chess platform that hosts millions of chess games every day. These games are available for free on [the Lichess database](https://database.lichess.org/), which make them a great data source for chess-related projects. However, extracting the dataset can be challenging due to their enormous size. This project aims to provide a solution in the form of a data pipeline capable of:
+Liches is a popular chess platform that hosts millions of chess games every day. These games are diverse and available for free on [the Lichess database](https://database.lichess.org/) which makes them a great data source for chess-related projects. However, chess games are compressed and released as one large file every month, which can be challenging to extract due to its enormous size. This project aims to provide a solution in the form of a data pipeline capable of:
 - Downloading and storing the monthly data files
 - Parsing these files into tabular (Parquet) format
 - Optionally filtering and/or aggregating games based on specified criteria
