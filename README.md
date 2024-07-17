@@ -4,14 +4,14 @@
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 ![chess-app - Page 2 (4)](https://github.com/user-attachments/assets/89c9022f-ee65-4ffc-adc9-438bd2830970)
 
-Liches is a popular chess platform that hosts millions of chess games everyday. In order to use these games for your personal projects, you can download them for free from ![the Lichess database](https://database.lichess.org/). However, extracting games from the database can be challenging due to their size. This project aims to provide a solution in the form of a data pipeline capable of:
+Liches is a popular chess platform that hosts millions of chess games everyday. In order to use these games for your personal projects, you can download them for free from [the Lichess database](https://database.lichess.org/). However, extracting games from the database can be challenging due to their size. This project aims to provide a solution in the form of a data pipeline capable of:
 - Downloading and storing the monthly data files
 - Parsing these files into tabular (Parquet) format
 - Optionally filtering and/or aggregating games based on specified criteria
 
 The pipeline uses Spark on Databricks for efficient large-scale data processing and can currently process 100 million games in about 90 minutes, depending on your data transfer speed and the chosen cluster size.
 
-I use the data from this pipeline for my game "Guess The ELO". It's a game where you can test your chess knowledge and intuition by guessing the Elo or rating of a given chess match. If you are interested, feel free to check out the game here and ![its repo](https://github.com/hieuimba/Guess-The-ELO) 
+I use the data from this pipeline for my game "Guess The ELO". It's a game where you can test your chess knowledge and intuition by guessing the Elo or rating of a given chess match. If you are interested, feel free to check out the game here and [its repo](https://github.com/hieuimba/Guess-The-ELO) 
 
 ## Architecture
 As shown above, the data pipeline uses Spark for data processing and Azure Data Factory to orchestrate activities. 
@@ -26,4 +26,4 @@ Here are the detailed steps:
 To replicate this pipeline, ARM templates for Azure resources and Databricks notebooks are provided. 
 Please note that additional setups will be required to configure the Databricks workspace, enable Unity Catalog, and ensure that resources can communicate together.
 
-This data pipeline is customized for my Guess the ELO application. If you're only interested in converting the zipped chess games into Parquet format, you only need to use the "1-decompress-file" notebook and part of the "2-parse-game" notebook inside the ![databricks folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/databricks).
+This data pipeline is customized for my Guess the ELO application. If you're only interested in converting the zipped chess games into Parquet format, you only need to use the "1-decompress-file" notebook and part of the "2-parse-game" notebook inside the [databricks folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/databricks).
