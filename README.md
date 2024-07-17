@@ -15,6 +15,7 @@ I use the data from this pipeline for my game "Guess The ELO". It's a game where
 ## Architecture
 Here is the process diagram for this data pipeline, its main components are Spark Databricks for data processing, Azure Data Factory for orchestration, and ADLS2 for storage.
 ![chess-app - Page 2 (4)](https://github.com/user-attachments/assets/89c9022f-ee65-4ffc-adc9-438bd2830970)
+The detailed steps are as follow:
 1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to Azure Data Lake Storage Gen2. 
 2. **Decompress File:** The downloaded ZST file is decompressed into PGN format.
 3. **Parse Games:** Spark parses the PGN file, extracting individual chess games and storing them into Parquet format.
