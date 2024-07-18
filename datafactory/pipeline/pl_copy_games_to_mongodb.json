@@ -1,0 +1,97 @@
+{
+	"name": "pl_copy_games_to_mongodb",
+	"properties": {
+		"activities": [
+			{
+				"name": "Gold Key to Cosmos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "Keys/Consolidated",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "MongoDbAtlasSink",
+						"writeBatchTimeout": "00:30:00",
+						"writeBehavior": "upsert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Event']"
+								},
+								"sink": {
+									"path": "Event"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ID']"
+								},
+								"sink": {
+									"path": "ID"
+								}
+							},
+							{
+								"source": {
+									"path": "$['GameIDs']"
+								},
+								"sink": {
+									"path": "GameIDs"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_datalake_gold_layer_keys",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_mongodb_database",
+						"type": "DatasetReference",
+						"parameters": {
+							"collectionName": "keys"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"Month": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-28T05:36:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
