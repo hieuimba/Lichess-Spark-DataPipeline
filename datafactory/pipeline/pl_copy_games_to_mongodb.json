@@ -53,7 +53,7 @@
 									"path": "$['ID']"
 								},
 								"sink": {
-									"path": "ID"
+									"path": "_id"
 								}
 							},
 							{
