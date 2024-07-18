@@ -350,7 +350,10 @@
 				"outputs": [
 					{
 						"referenceName": "ds_mongodb_database",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"collectionName": "games"
+						}
 					}
 				]
 			}
