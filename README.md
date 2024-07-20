@@ -26,7 +26,7 @@ The detailed steps are as follows:
 2. **Decompress File:** The downloaded ZST file is decompressed into PGN format.
 3. **Parse Games:** Spark parses the PGN file, extracting individual chess games and storing them into Parquet format.
 4. **Sample Games:** The parsed data is filtered and sampled to collect chess games that meet the requirements of the "Guess the ELO" game.
-5. **Copy Games:** The final dataset is transferred from Azure Data Lake Storage Gen2 to Cosmos DB for efficient retrieval.
+5. **Copy Games:** The final dataset is transferred from Azure Data Lake Storage Gen2 to Mongo DB for efficient retrieval.
 
 ## Usage
 To replicate this pipeline, ARM templates for Azure resources and Databricks notebooks are provided. 
