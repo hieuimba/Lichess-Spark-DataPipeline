@@ -21,7 +21,7 @@
 							{
 								"name": "Updated",
 								"value": {
-									"value": "@utcnow()",
+									"value": "@convertFromUtc(utcnow(), 'Central Standard Time', 'dd-MM-yyyy HH:mm:ss')",
 									"type": "Expression"
 								}
 							}
