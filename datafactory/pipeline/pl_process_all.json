@@ -54,7 +54,7 @@
 				}
 			},
 			{
-				"name": "pl_copy_games_to_cosmosdb",
+				"name": "pl_copy_games_to_mongodb",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -69,12 +69,13 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_copy_games_to_mongodb",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"Month": {
-							"value": "@pipeline().parameters.Month",
-							"type": "Expression"
-						}
+						"Month": "@pipeline().parameters.Month"
 					}
 				}
 			},
@@ -83,7 +84,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "pl_copy_games_to_cosmosdb",
+						"activity": "pl_copy_games_to_mongodb",
 						"dependencyConditions": [
 							"Succeeded"
 						]
