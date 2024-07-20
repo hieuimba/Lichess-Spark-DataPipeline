@@ -253,7 +253,15 @@
 									"type": "String"
 								},
 								"sink": {
-									"path": "_id"
+									"path": "$['_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "Updated"
+								},
+								"sink": {
+									"path": "$['Updated']"
 								}
 							}
 						]
