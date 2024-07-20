@@ -69,10 +69,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pl_copy_games_to_cosmosdb",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true,
 					"parameters": {
 						"Month": {
