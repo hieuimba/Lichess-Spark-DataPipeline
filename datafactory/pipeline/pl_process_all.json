@@ -111,8 +111,11 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "ds_la_update_blob_url",
-						"type": "DatasetReference"
+						"referenceName": "ds_config",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "la-update-blob-url.txt"
+						}
 					},
 					"firstRowOnly": true
 				}
