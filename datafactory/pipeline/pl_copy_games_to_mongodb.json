@@ -299,6 +299,7 @@
 					"url": "https://eastus2.azure.data.mongodb-api.com/app/guess-the-elo-service-odhzbev/endpoint/split_collection",
 					"authentication": {
 						"type": "Basic",
+						"username": "datafactory",
 						"password": {
 							"type": "AzureKeyVaultSecret",
 							"store": {
