@@ -280,7 +280,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Gold Games to Mongo",
+						"activity": "Lookup URL",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -296,13 +296,23 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://eastus2.azure.data.mongodb-api.com/app/guess-the-elo-service-odhzbev/endpoint/split_collection"
+					"url": {
+						"value": "@activity('Lookup URL').output.firstRow.Prop_0",
+						"type": "Expression"
+					}
 				}
 			},
 			{
 				"name": "Lookup URL",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Gold Games to Mongo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -325,7 +335,10 @@
 					},
 					"dataset": {
 						"referenceName": "ds_config",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "mongodb-split-collection-url.txt"
+						}
 					},
 					"firstRowOnly": true
 				}
