@@ -264,6 +264,14 @@
 								"sink": {
 									"path": "$['_id']"
 								}
+							},
+							{
+								"source": {
+									"name": "Updated"
+								},
+								"sink": {
+									"path": "$['Updated']"
+								}
 							}
 						]
 					}
