@@ -1,16 +1,24 @@
 {
-	"name": "ds_la_update_blob_url",
+	"name": "ds_config",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_datalakestorage",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "la-update-blob-url.txt",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
 				"fileSystem": "config"
 			},
 			"columnDelimiter": ",",
