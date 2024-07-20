@@ -14,7 +14,7 @@ I use the data from this pipeline for my game "Guess The ELO". In this game, you
 
 ## Architecture
 Below is the process diagram for this data pipeline. 
-![chess-app - Page 2 (4)](https://github.com/user-attachments/assets/89c9022f-ee65-4ffc-adc9-438bd2830970)
+![chess-app - Page 2 (5)](https://github.com/user-attachments/assets/db1211af-9701-42e1-a60c-ffeefc3eff51)
 
 The main technologies used are:
 - Spark Databricks for data processing
