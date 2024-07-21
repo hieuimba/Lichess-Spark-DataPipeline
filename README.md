@@ -19,14 +19,14 @@ Below is the process diagram for this data pipeline.
 The main components are:
 - Spark Databricks for data processing
 - Azure Data Factory for orchestration
-- ADLS2 for storage.
+- Azure Data Lake Storage Gen2 (ADLS2) for storage.
 
 The detailed steps are as follows:
-1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to Azure Data Lake Storage Gen2. 
+1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to ADLS2. 
 2. **Decompress File:** The downloaded ZST file is decompressed into PGN format.
 3. **Parse Games:** Spark parses the PGN file, extracting individual chess games and storing them into Parquet format.
-4. **Sample Games:** The parsed data is filtered and sampled to collect chess games that meet the requirements of the "Guess the ELO" game.
-5. **Copy Games:** The final dataset is transferred from Azure Data Lake Storage Gen2 to Mongo DB for efficient retrieval.
+4. **Sample Games:** The parsed data is filtered and sampled to collect chess games for the "Guess the ELO" game.
+5. **Copy Games:** The final dataset is transferred from ADLS2 to Mongo DB for efficient querying.
 
 ## Usage
 To replicate this pipeline, ARM templates for Azure resources and Databricks notebooks are provided. 
