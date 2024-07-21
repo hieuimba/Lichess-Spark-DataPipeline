@@ -8,7 +8,7 @@ Liches is a popular chess platform that hosts millions of chess games every day.
 - Parsing these files into a tabular (Parquet) format
 - Filtering and/or aggregating games based on specified criteria
 
-The pipeline uses Spark Databricks to efficiently handle the large dataset, capable of processing up to 100 million games in about 60 minutes. Processing time may vary depending on your data transfer speed and cluster settings.
+The pipeline uses Spark Databricks to efficiently handle the large dataset, capable of processing up to 100 million games in about 60 minutes.
 
 I use the data from this pipeline for my game "Guess The ELO". In this game, you can test your chess knowledge and intuition by guessing the rating of a given chess match. If you're interested, feel free to check out the game and [its repo](https://github.com/hieuimba/Guess-The-ELO).
 
