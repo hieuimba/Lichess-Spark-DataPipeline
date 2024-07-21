@@ -16,7 +16,7 @@ I use the data from this pipeline for my game "Guess The ELO". In this game, you
 Below is the process diagram for this data pipeline. 
 ![chess-app - Page 2 (5)](https://github.com/user-attachments/assets/db1211af-9701-42e1-a60c-ffeefc3eff51)
 
-The main technologies used are:
+The main components are:
 - Spark Databricks for data processing
 - Azure Data Factory for orchestration
 - ADLS2 for storage.
