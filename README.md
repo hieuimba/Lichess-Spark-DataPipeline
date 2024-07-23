@@ -3,14 +3,14 @@
 ## Description
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Liches is a popular chess platform that hosts millions of chess games every day. This diverse game collection is available for free on [the Lichess database](https://database.lichess.org/), making them a great data source for chess-related projects. However, these games are compressed and released as one large file every month, which can be challenging to extract due to its enormous size. This project provides a solution with a data pipeline capable of:
+Liches is a popular chess platform that hosts millions of chess games every day. This diverse game collection makes a great data source for chess-related projects, especially since these games are also published for free on [the Lichess database](https://database.lichess.org/) every month. However, downloading and using these games can prove to be difficult due to their enormous combined size. This project provides a solution with a data pipeline capable of:
 - Downloading and storing the monthly data files
 - Parsing these files into a tabular (Parquet) format
 - Filtering and/or aggregating games based on specified criteria
 
 The pipeline uses Spark Databricks to efficiently handle the large dataset, capable of processing up to 100 million games in about 60 minutes.
 
-I use the data from this pipeline for my game "Guess The ELO". In this game, you can test your chess knowledge and intuition by guessing the rating of a given chess match. If you're interested, feel free to check out the game and [its repo](https://github.com/hieuimba/Guess-The-ELO).
+I use the data from this pipeline for my game "Guess The ELO". In this game, you can test your chess skills by guessing the rating (Elo) of a chess match. If you're interested, feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
 ## Architecture
 Below is the process diagram for this data pipeline. 
