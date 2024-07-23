@@ -4,8 +4,8 @@
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
 Lichess is a popular chess platform where millions of games are played every day. These games are made available for free on [the Lichess database](https://database.lichess.org/) each month, making them a great data source for chess-related projects. However, due to their enormous combined size, downloading and using these games can be challenging. This project provides a solution with a data pipeline capable of:
-- Downloading and storing the monthly data files
-- Parsing these files into a tabular (Parquet) format
+- Downloading and storing the monthly game files from the Lichess database
+- Parsing these files into Parquet format for efficient storage and retrieval
 - Filtering and/or aggregating games based on specified criteria
 
 The pipeline uses Spark Databricks to efficiently handle the large dataset, capable of processing up to 100 million games in about 60 minutes.
