@@ -13,7 +13,7 @@ The pipeline uses Spark Databricks to efficiently handle the large dataset, capa
 I use the data from this pipeline for my game "Guess The ELO". In this game, you can test your chess skills by guessing the rating (Elo) of a chess match. If you're interested, feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
 ## Architecture
-Below is the process diagram for this data pipeline. 
+Below is the process diagram for this data pipeline: 
 ![chess-app - Page 2 (5)](https://github.com/user-attachments/assets/db1211af-9701-42e1-a60c-ffeefc3eff51)
 
 It uses:
@@ -25,8 +25,8 @@ The detailed steps are as follows:
 1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to ADLS2. 
 2. **Decompress File:** The downloaded ZST file is decompressed into PGN format.
 3. **Parse Games:** Spark parses the PGN file, extracting individual chess games and storing them into Parquet format.
-4. **Sample Games:** The parsed data is filtered and sampled to collect chess games for the "Guess the ELO" game.
-5. **Copy Games:** The final dataset is transferred from ADLS2 to Mongo DB for efficient querying.
+4. **Sample Games:** The parsed data is filtered and sampled to collect chess games for "Guess the ELO".
+5. **Copy Games:** The final dataset is transferred from ADLS2 to MongoDB for application usage.
 
 ## Usage
 To replicate this pipeline, ARM templates for Azure resources and Databricks notebooks are provided. 
