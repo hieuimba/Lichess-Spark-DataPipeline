@@ -13,10 +13,10 @@ The pipeline uses Spark Databricks to efficiently handle the large dataset and c
 I use the data from this pipeline in my game "Guess The ELO". It's a chess-based quiz game where your goal is to use your chess knowledge and intuition to correctly guess the Elo rating of a given chess match. If you're interested, feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
 ## Architecture
-Below is the process diagram for this data pipeline: 
+See the process diagram for this data pipeline below: 
 ![chess-app - Page 2 (5)](https://github.com/user-attachments/assets/db1211af-9701-42e1-a60c-ffeefc3eff51)
 
-It uses:
+The pipeline uses:
 - Spark Databricks for data processing
 - Azure Data Factory for orchestration, and
 - Azure Data Lake Storage Gen2 (ADLS2) for storage.
