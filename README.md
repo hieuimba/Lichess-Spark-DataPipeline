@@ -10,7 +10,7 @@ Lichess is a popular chess platform where millions of games are played every day
 
 The pipeline uses Spark Databricks to efficiently handle the large dataset and currently processes up to 100 million games in about 60 minutes.
 
-I use the data from this pipeline for my game "Guess The ELO". In this game, your goal is to correctly guess the Elo rating of random chess games collected from Lichess. If you're interested, feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
+I use the data from this pipeline for my game "Guess The ELO". In this game, your goal is to correctly guess the Elo rating of various chess games sourced from Lichess. If you're interested, feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
 ## Architecture
 Below is the process diagram for this data pipeline: 
