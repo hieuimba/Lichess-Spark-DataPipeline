@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "df-guess-the-elo-dev"
 		},
+		"ls_mongodb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_mongodb'"
+		},
 		"ls_datalakestorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://guesstheelostoragedev.dfs.core.windows.net/"
@@ -19,9 +23,9 @@
 			"type": "string",
 			"defaultValue": "https://database.lichess.org/standard/"
 		},
-		"ls_cosmosdb_properties_typeProperties_connectionString_secretName": {
+		"ls_mongodb_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "cosmosdb-connection-string"
+			"defaultValue": "guess-the-elo"
 		}
 	},
 	"variables": {
@@ -70,6 +74,61 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_mongodb')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MongoDbAtlas",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_mongodb_connectionString')]",
+					"database": "[parameters('ls_mongodb_properties_typeProperties_database')]",
+					"driverVersion": "v2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_config')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalakestorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"fileSystem": "config"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalakestorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_datalake_gold_layer_games')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -94,29 +153,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_datalake_gold_layer_keys')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_datalakestorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "gold"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_datalakestorage')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_datalake_raw_layer')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -133,38 +169,6 @@
 						"fileSystem": "raw"
 					}
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_datalakestorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_la_update_blob_url')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_datalakestorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "la-update-blob-url.txt",
-						"fileSystem": "config"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_datalakestorage')]"
@@ -201,25 +205,31 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_cosmosdb')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/ds_mongodb_database')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_mongodb",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"collectionName": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
-				"type": "CosmosDb",
+				"type": "MongoDbAtlasCollection",
+				"schema": [],
 				"typeProperties": {
-					"connectionString": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "ls_keyvault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "[parameters('ls_cosmosdb_properties_typeProperties_connectionString_secretName')]"
+					"collection": {
+						"value": "@dataset().collectionName",
+						"type": "Expression"
 					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_keyvault')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_mongodb')]"
 			]
 		},
 		{
@@ -252,6 +262,390 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_keyvault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_copy_games_to_mongodb')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Gold Games to Mongo",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"additionalColumns": [
+									{
+										"name": "Updated",
+										"value": {
+											"value": "@convertFromUtc(utcnow(), 'Central Standard Time', 'dd-MM-yyyy HH:mm:ss')",
+											"type": "Expression"
+										}
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": {
+										"value": "@concat('Games/',pipeline().parameters.Month)",
+										"type": "Expression"
+									},
+									"wildcardFileName": "*.parquet",
+									"enablePartitionDiscovery": true
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "MongoDbAtlasSink",
+								"writeBatchTimeout": "00:30:00",
+								"writeBehavior": "upsert"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "GameID",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['GameID']"
+										}
+									},
+									{
+										"source": {
+											"name": "TimeControl",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['TimeControl']"
+										}
+									},
+									{
+										"source": {
+											"name": "Opening",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Opening']"
+										}
+									},
+									{
+										"source": {
+											"name": "ECO",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['ECO']"
+										}
+									},
+									{
+										"source": {
+											"name": "Site",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Site']"
+										}
+									},
+									{
+										"source": {
+											"name": "Termination",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Termination']"
+										}
+									},
+									{
+										"source": {
+											"name": "Moves",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Moves']"
+										}
+									},
+									{
+										"source": {
+											"name": "Result",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Result']"
+										}
+									},
+									{
+										"source": {
+											"name": "White",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['White']"
+										}
+									},
+									{
+										"source": {
+											"name": "WhiteTitle",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['WhiteTitle']"
+										}
+									},
+									{
+										"source": {
+											"name": "WhiteElo",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['WhiteElo']"
+										}
+									},
+									{
+										"source": {
+											"name": "WhiteRatingDiff",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['WhiteRatingDiff']"
+										}
+									},
+									{
+										"source": {
+											"name": "Black",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Black']"
+										}
+									},
+									{
+										"source": {
+											"name": "BlackTitle",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['BlackTitle']"
+										}
+									},
+									{
+										"source": {
+											"name": "BlackElo",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['BlackElo']"
+										}
+									},
+									{
+										"source": {
+											"name": "BlackRatingDiff",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['BlackRatingDiff']"
+										}
+									},
+									{
+										"source": {
+											"name": "EloDiff",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['EloDiff']"
+										}
+									},
+									{
+										"source": {
+											"name": "NumberOfMoves",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['NumberOfMoves']"
+										}
+									},
+									{
+										"source": {
+											"name": "ResultComment",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['ResultComment']"
+										}
+									},
+									{
+										"source": {
+											"name": "UTCDate",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['UTCDate']"
+										}
+									},
+									{
+										"source": {
+											"name": "NumericGameID",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['NumericGameID']"
+										}
+									},
+									{
+										"source": {
+											"name": "Event",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['Event']"
+										}
+									},
+									{
+										"source": {
+											"name": "EloRange",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['EloRange']"
+										}
+									},
+									{
+										"source": {
+											"name": "ID",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "Updated"
+										},
+										"sink": {
+											"path": "$['Updated']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_datalake_gold_layer_games",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_mongodb_database",
+								"type": "DatasetReference",
+								"parameters": {
+									"collectionName": "games"
+								}
+							}
+						]
+					},
+					{
+						"name": "Split Games",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Lookup URL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "@activity('Lookup URL').output.firstRow.Prop_0",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Lookup URL",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Gold Games to Mongo",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "ds_config",
+								"type": "DatasetReference",
+								"parameters": {
+									"fileName": "mongodb-split-collection-url.txt"
+								}
+							},
+							"firstRowOnly": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"Month": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-28T05:36:26Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_datalake_gold_layer_games')]",
+				"[concat(variables('factoryId'), '/datasets/ds_mongodb_database')]",
+				"[concat(variables('factoryId'), '/datasets/ds_config')]"
 			]
 		},
 		{
@@ -377,296 +771,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_cosmosdb_container')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_cosmosdb",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"containerName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "CosmosDbSqlApiCollection",
-				"schema": {},
-				"typeProperties": {
-					"collectionName": {
-						"value": "@dataset().containerName",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_cosmosdb')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_copy_games_to_cosmosdb')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Gold Games to Cosmos",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": {
-										"value": "@concat('Games/',pipeline().parameters.Month)",
-										"type": "Expression"
-									},
-									"wildcardFileName": "*.parquet",
-									"enablePartitionDiscovery": true
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							},
-							"sink": {
-								"type": "CosmosDbSqlApiSink",
-								"writeBehavior": "upsert",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "GameID",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['GameID']"
-										}
-									},
-									{
-										"source": {
-											"name": "Moves",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Moves']"
-										}
-									},
-									{
-										"source": {
-											"name": "WhiteElo",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['WhiteElo']"
-										}
-									},
-									{
-										"source": {
-											"name": "BlackElo",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['BlackElo']"
-										}
-									},
-									{
-										"source": {
-											"name": "TimeControl",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['TimeControl']"
-										}
-									},
-									{
-										"source": {
-											"name": "Event",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['Event']"
-										}
-									},
-									{
-										"source": {
-											"name": "EloRange",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['EloRange']"
-										}
-									},
-									{
-										"source": {
-											"name": "ID",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['id']"
-										}
-									},
-									{
-										"source": {
-											"name": "Site"
-										},
-										"sink": {
-											"path": "$['Site']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_datalake_gold_layer_games",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_cosmosdb_container",
-								"type": "DatasetReference",
-								"parameters": {
-									"containerName": "games"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"Month": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-28T05:36:26Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_datalake_gold_layer_games')]",
-				"[concat(variables('factoryId'), '/datasets/ds_cosmosdb_container')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_copy_keys_to_cosmosdb')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Gold Key to Cosmos",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFolderPath": {
-										"value": "Keys/Consolidated",
-										"type": "Expression"
-									},
-									"wildcardFileName": "*.json",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "CosmosDbSqlApiSink",
-								"writeBehavior": "upsert",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "$['Event']"
-										},
-										"sink": {
-											"path": "Event"
-										}
-									},
-									{
-										"source": {
-											"path": "GameIDs"
-										},
-										"sink": {
-											"path": "GameIDs"
-										}
-									},
-									{
-										"source": {
-											"path": "$['ID']"
-										},
-										"sink": {
-											"path": "id"
-										}
-									}
-								],
-								"collectionReference": ""
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_datalake_gold_layer_keys",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_cosmosdb_container",
-								"type": "DatasetReference",
-								"parameters": {
-									"containerName": "keys"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-28T05:36:26Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_datalake_gold_layer_keys')]",
-				"[concat(variables('factoryId'), '/datasets/ds_cosmosdb_container')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/pl_process_all')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -724,7 +828,7 @@
 						}
 					},
 					{
-						"name": "pl_copy_games_to_cosmosdb",
+						"name": "pl_copy_games_to_mongodb",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
@@ -740,7 +844,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "pl_copy_games_to_cosmosdb",
+								"referenceName": "pl_copy_games_to_mongodb",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -753,35 +857,11 @@
 						}
 					},
 					{
-						"name": "pl_copy_keys_to_cosmosdb",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "pl_copy_games_to_cosmosdb",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_copy_keys_to_cosmosdb",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
 						"name": "Lookup URL",
 						"type": "Lookup",
 						"dependsOn": [
 							{
-								"activity": "pl_copy_keys_to_cosmosdb",
+								"activity": "pl_copy_games_to_mongodb",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -808,9 +888,11 @@
 								}
 							},
 							"dataset": {
-								"referenceName": "ds_la_update_blob_url",
+								"referenceName": "ds_config",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"fileName": "la-update-blob-url.txt"
+								}
 							},
 							"firstRowOnly": true
 						}
@@ -862,9 +944,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_download_games_to_raw')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_parse_games_in_databricks')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_copy_games_to_cosmosdb')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_copy_keys_to_cosmosdb')]",
-				"[concat(variables('factoryId'), '/datasets/ds_la_update_blob_url')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_copy_games_to_mongodb')]",
+				"[concat(variables('factoryId'), '/datasets/ds_config')]"
 			]
 		}
 	]

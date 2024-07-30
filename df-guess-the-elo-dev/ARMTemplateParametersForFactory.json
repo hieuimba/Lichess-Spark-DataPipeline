@@ -5,8 +5,8 @@
 		"factoryName": {
 			"value": "df-guess-the-elo-dev"
 		},
-		"ls_cosmosdb_properties_typeProperties_connectionString_secretName": {
-			"value": "cosmosdb-connection-string"
+		"ls_mongodb_connectionString": {
+			"value": ""
 		},
 		"ls_datalakestorage_properties_typeProperties_url": {
 			"value": "https://guesstheelostoragedev.dfs.core.windows.net/"
@@ -16,6 +16,9 @@
 		},
 		"ls_lichess_database_properties_typeProperties_url": {
 			"value": "https://database.lichess.org/standard/"
+		},
+		"ls_mongodb_properties_typeProperties_database": {
+			"value": "guess-the-elo"
 		}
 	}
 }
