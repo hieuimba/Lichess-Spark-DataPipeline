@@ -1,0 +1,373 @@
+{
+	"name": "pl_copy_games_to_mongodb",
+	"properties": {
+		"activities": [
+			{
+				"name": "Gold Games to Mongo",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"additionalColumns": [
+							{
+								"name": "Updated",
+								"value": {
+									"value": "@convertFromUtc(utcnow(), 'Central Standard Time', 'dd-MM-yyyy HH:mm:ss')",
+									"type": "Expression"
+								}
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('Games/',pipeline().parameters.Month)",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": true
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "MongoDbAtlasSink",
+						"writeBatchTimeout": "00:30:00",
+						"writeBehavior": "upsert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "GameID",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['GameID']"
+								}
+							},
+							{
+								"source": {
+									"name": "TimeControl",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['TimeControl']"
+								}
+							},
+							{
+								"source": {
+									"name": "Opening",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Opening']"
+								}
+							},
+							{
+								"source": {
+									"name": "ECO",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['ECO']"
+								}
+							},
+							{
+								"source": {
+									"name": "Site",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Site']"
+								}
+							},
+							{
+								"source": {
+									"name": "Termination",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Termination']"
+								}
+							},
+							{
+								"source": {
+									"name": "Moves",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Moves']"
+								}
+							},
+							{
+								"source": {
+									"name": "Result",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Result']"
+								}
+							},
+							{
+								"source": {
+									"name": "White",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['White']"
+								}
+							},
+							{
+								"source": {
+									"name": "WhiteTitle",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['WhiteTitle']"
+								}
+							},
+							{
+								"source": {
+									"name": "WhiteElo",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['WhiteElo']"
+								}
+							},
+							{
+								"source": {
+									"name": "WhiteRatingDiff",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['WhiteRatingDiff']"
+								}
+							},
+							{
+								"source": {
+									"name": "Black",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Black']"
+								}
+							},
+							{
+								"source": {
+									"name": "BlackTitle",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['BlackTitle']"
+								}
+							},
+							{
+								"source": {
+									"name": "BlackElo",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['BlackElo']"
+								}
+							},
+							{
+								"source": {
+									"name": "BlackRatingDiff",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['BlackRatingDiff']"
+								}
+							},
+							{
+								"source": {
+									"name": "EloDiff",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['EloDiff']"
+								}
+							},
+							{
+								"source": {
+									"name": "NumberOfMoves",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['NumberOfMoves']"
+								}
+							},
+							{
+								"source": {
+									"name": "ResultComment",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['ResultComment']"
+								}
+							},
+							{
+								"source": {
+									"name": "UTCDate",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['UTCDate']"
+								}
+							},
+							{
+								"source": {
+									"name": "NumericGameID",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['NumericGameID']"
+								}
+							},
+							{
+								"source": {
+									"name": "Event",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Event']"
+								}
+							},
+							{
+								"source": {
+									"name": "EloRange",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['EloRange']"
+								}
+							},
+							{
+								"source": {
+									"name": "ID",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "Updated"
+								},
+								"sink": {
+									"path": "$['Updated']"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_datalake_gold_layer_games",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_mongodb_database",
+						"type": "DatasetReference",
+						"parameters": {
+							"collectionName": "games"
+						}
+					}
+				]
+			},
+			{
+				"name": "Split Games",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Lookup URL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@activity('Lookup URL').output.firstRow.Prop_0",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Lookup URL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Gold Games to Mongo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_config",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "mongodb-split-collection-url.txt"
+						}
+					},
+					"firstRowOnly": true
+				}
+			}
+		],
+		"parameters": {
+			"Month": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-07-30T21:05:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

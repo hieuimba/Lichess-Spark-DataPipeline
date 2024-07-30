@@ -1,0 +1,9 @@
+{
+	"name": "df-guess-the-elo-dev",
+	"location": "canadacentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d8726b3f-b500-4f42-bd9c-1dddfd1d25cd",
+		"tenantId": "08f8da58-0aa8-4930-bc0f-ce59279820fa"
+	}
+}
