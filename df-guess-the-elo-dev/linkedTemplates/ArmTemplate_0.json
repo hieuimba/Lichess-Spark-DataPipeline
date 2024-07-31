@@ -129,7 +129,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_datalake_gold_layer_games')]",
+			"name": "[concat(parameters('factoryName'), '/ds_datalake_gold_layer')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -546,7 +546,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_datalake_gold_layer_games",
+								"referenceName": "ds_datalake_gold_layer",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -640,10 +640,10 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-05-28T05:36:26Z"
+				"lastPublishTime": "2024-07-30T21:05:31Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_datalake_gold_layer_games')]",
+				"[concat(variables('factoryId'), '/datasets/ds_datalake_gold_layer')]",
 				"[concat(variables('factoryId'), '/datasets/ds_mongodb_database')]",
 				"[concat(variables('factoryId'), '/datasets/ds_config')]"
 			]
@@ -764,14 +764,14 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-05-28T23:24:46Z"
+				"lastPublishTime": "2024-06-04T02:15:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_databricks')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_process_all')]",
+			"name": "[concat(parameters('factoryName'), '/pl_main')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -939,7 +939,7 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-05-29T00:54:09Z"
+				"lastPublishTime": "2024-07-30T21:05:32Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_download_games_to_raw')]",
