@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/databricks/0-run-all",
+					"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/guess-the-elo/databricks/0-run-all",
 					"baseParameters": {
 						"month": {
 							"value": "@pipeline().parameters.Month",
