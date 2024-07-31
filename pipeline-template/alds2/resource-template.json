@@ -2,8 +2,8 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "storageAccounts_guesstheelostoragedev_name": {
-            "defaultValue": "guesstheelostoragedev",
+        "storageAccounts_lichesspipelinestorage_name": {
+            "defaultValue": "lichesspipelinestorage",
             "type": "String"
         }
     },
@@ -12,7 +12,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2023-05-01",
-            "name": "[parameters('storageAccounts_guesstheelostoragedev_name')]",
+            "name": "[parameters('storageAccounts_lichesspipelinestorage_name')]",
             "location": "canadacentral",
             "sku": {
                 "name": "Standard_LRS",
@@ -28,6 +28,7 @@
                 "minimumTlsVersion": "TLS1_2",
                 "allowBlobPublicAccess": false,
                 "allowSharedKeyAccess": true,
+                "largeFileSharesState": "Enabled",
                 "isHnsEnabled": true,
                 "networkAcls": {
                     "bypass": "AzureServices",
@@ -56,9 +57,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -82,9 +83,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -106,9 +107,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -119,9 +120,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/tableServices",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -132,10 +133,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default/bronze')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default/bronze')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_guesstheelostoragedev_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_lichesspipelinestorage_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -149,10 +150,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default/config')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default/gold')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_guesstheelostoragedev_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_lichesspipelinestorage_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -166,10 +167,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default/gold')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default/raw')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_guesstheelostoragedev_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_lichesspipelinestorage_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -183,27 +184,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default/raw')]",
+            "name": "[concat(parameters('storageAccounts_lichesspipelinestorage_name'), '/default/silver')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_guesstheelostoragedev_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
-            ],
-            "properties": {
-                "immutableStorageWithVersioning": {
-                    "enabled": false
-                },
-                "defaultEncryptionScope": "$account-encryption-key",
-                "denyEncryptionScopeOverride": false,
-                "publicAccess": "None"
-            }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_guesstheelostoragedev_name'), '/default/silver')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_guesstheelostoragedev_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_guesstheelostoragedev_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_lichesspipelinestorage_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_lichesspipelinestorage_name'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
