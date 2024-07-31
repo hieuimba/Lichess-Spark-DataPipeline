@@ -1,0 +1,167 @@
+{
+	"name": "pl_main",
+	"properties": {
+		"activities": [
+			{
+				"name": "pl_download_games_to_raw",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_download_games_to_raw",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Month": {
+							"value": "@pipeline().parameters.Month",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "pl_parse_games_in_databricks",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_download_games_to_raw",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_parse_games_in_databricks",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Month": {
+							"value": "@pipeline().parameters.Month",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "pl_copy_games_to_mongodb",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_parse_games_in_databricks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_copy_games_to_mongodb",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Month": {
+							"value": "@pipeline().parameters.Month",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Lookup URL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "pl_copy_games_to_mongodb",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_config",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "la-update-blob-url.txt"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Update Config",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Lookup URL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": {
+						"value": "@activity('Lookup URL').output.firstRow.Prop_0",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "{\n    \"Month\": \"@{pipeline().parameters.Month}\"\n}\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Month": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-07-31T00:01:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
