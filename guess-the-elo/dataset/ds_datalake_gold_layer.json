@@ -1,5 +1,5 @@
 {
-	"name": "ds_datalake_gold_layer_games",
+	"name": "ds_datalake_gold_layer",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_datalakestorage",

@@ -278,7 +278,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_datalake_gold_layer_games",
+						"referenceName": "ds_datalake_gold_layer",
 						"type": "DatasetReference"
 					}
 				],
