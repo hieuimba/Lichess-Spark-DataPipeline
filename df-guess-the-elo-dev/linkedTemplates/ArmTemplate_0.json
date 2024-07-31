@@ -640,7 +640,7 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-07-30T21:05:31Z"
+				"lastPublishTime": "2024-07-31T00:01:52Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_datalake_gold_layer')]",
@@ -741,7 +741,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/databricks/0-run-all",
+							"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/guess-the-elo/databricks/0-run-all",
 							"baseParameters": {
 								"month": {
 									"value": "@pipeline().parameters.Month",
@@ -939,7 +939,7 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-07-30T21:05:32Z"
+				"lastPublishTime": "2024-07-31T00:01:52Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_download_games_to_raw')]",

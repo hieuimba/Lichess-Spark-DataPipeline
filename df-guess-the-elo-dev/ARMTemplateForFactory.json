@@ -408,7 +408,7 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-07-30T21:05:31Z"
+				"lastPublishTime": "2024-07-31T00:01:52Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_datalake_gold_layer')]",
@@ -488,54 +488,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_lichess_database')]",
 				"[concat(variables('factoryId'), '/datasets/ds_datalake_raw_layer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_parse_games_in_databricks')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "run_all",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/databricks/0-run-all",
-							"baseParameters": {
-								"month": {
-									"value": "@pipeline().parameters.Month",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_databricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"Month": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-06-04T02:15:53Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_databricks')]"
 			]
 		},
 		{
@@ -707,13 +659,61 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-07-30T21:05:32Z"
+				"lastPublishTime": "2024-07-31T00:01:52Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_download_games_to_raw')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_parse_games_in_databricks')]",
 				"[concat(variables('factoryId'), '/pipelines/pl_copy_games_to_mongodb')]",
 				"[concat(variables('factoryId'), '/datasets/ds_config')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_parse_games_in_databricks')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "run_all",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/guess-the-elo/databricks/0-run-all",
+							"baseParameters": {
+								"month": {
+									"value": "@pipeline().parameters.Month",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"Month": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-06-04T02:15:53Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_databricks')]"
 			]
 		},
 		{
