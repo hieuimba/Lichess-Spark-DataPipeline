@@ -5,14 +5,7 @@
 		"annotations": [],
 		"type": "AzureDatabricks",
 		"typeProperties": {
-			"domain": {
-				"type": "AzureKeyVaultSecret",
-				"store": {
-					"referenceName": "ls_keyvault",
-					"type": "LinkedServiceReference"
-				},
-				"secretName": "adf-databricks-access-token"
-			},
+			"domain": "https://adb-4986084740927730.10.azuredatabricks.net",
 			"accessToken": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
