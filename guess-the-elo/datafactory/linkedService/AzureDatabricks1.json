@@ -26,7 +26,7 @@
 			"newClusterDriverNodeType": "Standard_DS4_v2",
 			"clusterOption": "Fixed",
 			"newClusterInitScripts": [],
-			"dataSecurityMode": "USER_ISOLATION"
+			"dataSecurityMode": "SINGLE_USER"
 		}
 	}
 }
