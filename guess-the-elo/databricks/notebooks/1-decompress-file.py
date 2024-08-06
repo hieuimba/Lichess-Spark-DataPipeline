@@ -15,11 +15,11 @@ print(f"Decompressing file from: {raw_file} \n to {bronze_dir}")
 
 # COMMAND ----------
 
-import os
 import zstandard as zstd
 
 chunk_group = []
-group_size = 10 * 3
+chunk_size = 1024 * 1024 * 32  # 32 MB chunks
+group_size = 10 * 3  # Each group has 30 chunks (32 * 30 = 960MB)
 
 # Open the compressed file for reading
 with open(raw_file, "rb") as ifh:
@@ -27,7 +27,6 @@ with open(raw_file, "rb") as ifh:
 
     # Create a decompression stream
     with dctx.stream_reader(ifh) as reader:
-        chunk_size = 1024 * 1024 * 32  # 32 MB chunks
         chunk_index = 0
         group_index = 0
 

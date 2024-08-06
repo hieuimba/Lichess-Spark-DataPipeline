@@ -1,0 +1,17 @@
+{
+    "spark_conf.spark.databricks.cluster.profile": {
+        "type": "fixed",
+        "value": "singleNode",
+        "hidden": true
+    },
+    "num_workers": {
+        "type": "fixed",
+        "value": 0,
+        "hidden": true
+    },
+    "data_security_mode": {
+        "type": "fixed",
+        "value": "SINGLE_USER",
+        "hidden": true
+    }
+}
