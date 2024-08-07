@@ -5,13 +5,15 @@
 
 file_month = dbutils.widgets.get("month")
 
-raw_dir = "/Volumes/main/default/vol-raw/"
-raw_file = raw_dir + f"lichess_db_standard_rated_{file_month}.pgn.zst"
-
+raw_dir = (
+    "/Volumes/main/default/vol-raw/" + f"lichess_db_standard_rated_{file_month}.pgn.zst"
+)
 bronze_dir = "/Volumes/main/default/vol-bronze/" + f"{file_month}/"
+
+dbutils.fs.rm(bronze_dir, True)
 dbutils.fs.mkdirs(bronze_dir)
 
-print(f"Decompressing file from: {raw_file} \n to {bronze_dir}")
+print(f"Decompressing file from: {raw_dir} \n to {bronze_dir}")
 
 # COMMAND ----------
 
@@ -22,7 +24,7 @@ chunk_size = 1024 * 1024 * 32  # 32 MB chunks
 group_size = 10 * 3  # Each group has 30 chunks (32 * 30 = 960MB)
 
 # Open the compressed file for reading
-with open(raw_file, "rb") as ifh:
+with open(raw_dir, "rb") as ifh:
     dctx = zstd.ZstdDecompressor()
 
     # Create a decompression stream

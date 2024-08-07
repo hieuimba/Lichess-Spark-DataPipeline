@@ -11,7 +11,6 @@ raw_dir = (
 )
 bronze_dir = "/Volumes/main/lichess/vol-bronze/" + f"{file_month}/"
 
-
 dbutils.fs.rm(bronze_dir, True)
 dbutils.fs.mkdirs(bronze_dir)
 

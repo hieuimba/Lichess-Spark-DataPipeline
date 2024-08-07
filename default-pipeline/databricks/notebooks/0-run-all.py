@@ -6,4 +6,4 @@ file_month = dbutils.widgets.get("month")
 
 dbutils.notebook.run("1-decompress-file", 0, {"month": file_month})
 dbutils.notebook.run("2-parse-games", 0, {"month": file_month})
-dbutils.notebook.run("3-sample-games", 0, {"month": file_month})
+dbutils.notebook.run("3-analyze-games", 0, {"month": file_month})
