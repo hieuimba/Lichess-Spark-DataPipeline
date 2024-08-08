@@ -4,16 +4,16 @@
 
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Lichess is a popular online chess platform where millions of chess games are played everyday. Each month, these games are complied and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting these games can be challenging due to the combined size of the dataset. Some of the main challenges involve:
+Lichess is a popular online chess platform where millions of chess games are played everyday. Each month, these games are complied and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing these games poses several challenges due to the dataset's large size. Key challenges include:
 
-- Parsing chess games from a large PGN (Portable Game Notation) file.
-- Converting and storing these games in a more accessible format.
-- Applying filters and/or aggregating games based on custom criteria.
+- Parsing chess games from a large PGN (Portable Game Notation) file
+- Converting and storing these games in a more accessible format
+- Applying custom transformation like filters, aggregation on a large collection of games
 
 This data pipeline aims to address these issues by providing the following features:
 
 - Automated processing of monthly data files using an Azure-based serverless architecture.
-- Using Spark Databricks to extract and parse large volume of chess games efficiently. The current processing time is about 60 minutes for 100 million games (one month's worth of data).
+- Efficient extraction and parsing of large volumes of chess games using Spark Databricks. The current processing time is about 60 minutes for 100 million games (one month's worth of data).
 - Storage of parsed games in Parquet format, optimizing for storage and retrieval
 - Fully customizable filtering and aggregation capabilities leveraging Spark's functionality.
 
@@ -38,11 +38,11 @@ The detailed steps are:
 
 ## Application
 
-As an example of how this pipeline can be customized for specific chess-related applications, I use the data from this pipeline for my game "Guess The ELO". It's a chess-based quiz game where your goal is to guess the correct Elo rating of a chess match.
+As an example of how this pipeline can be customized for specific applications, I use the data from this pipeline for my game "Guess The ELO". It's a chess-based quiz game where your goal is to guess the correct Elo rating of a chess match.
 
 For “Guess the ELO”, I made some modifications to the data pipeline:
 
-- Silver layer: Applied additional filtering logic to select suitable chess games such as games with evaluation, more than 20 moves, etc.
+- Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, more than 20 moves, etc.
 - Gold layer: Applied custom sampling logic to ensure random distribution of chess games. This makes sure that games from all ELO ranges have the same chance to be chosen.
 - Added a final step to transfer the processed dataset into MongoDB for application usage.
 
@@ -52,7 +52,7 @@ If you're interested in "Guess the ELO", feel free to check out [the game here](
 
 ## Usage
 
-To recreate this data pipeline, there are a number of steps required:
+To recreate this data pipeline, a number of steps are required:
 
 1. Deploy Azure resources using the provided ARM template.
 2. Enable Unity Catalog in the created Databricks workspace.
@@ -66,9 +66,7 @@ The following sections provides the detailed breakdown of each step.
 
 ### 1. Deploy resources on Azure
 
-Use the Azure portal's Template Deployment service to deploy the provided [ARM template](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/ARMTemplate.json).
-
-Choose "Build your own template" and paste the provided ARM template
+Navigate to Azure portal's Template Deployment service, choose "Build your own template" and paste the provided [ARM template](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/ARMTemplate.json).
 
 This ARM template will deploy:
 
@@ -83,7 +81,7 @@ Provide names for these resources in the deployment screen and click "Create" to
 
 After the resources are deployed, you'll need to grant your Databricks workspace access to the storage account. This involves enabling [Unity Catalog](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/) through creating a Metastore and assigning it to your workspace. Here's how to do it:
 
-2.1. Access the Account Console:
+2.1. Access the Databricks Account Console:
 
 - In your Databricks workspace, click on your workspace name
 - Select "Manage Account" from the dropdown menu
@@ -100,7 +98,7 @@ After the resources are deployed, you'll need to grant your Databricks workspace
 - After creating or selecting an existing Metastore, you'll see an option to assign it to your workspace
 - Select your workspace and confirm the assignment.
 
-Note: A Metastore is a top-level container that Databricks uses to manage your data sources so by assigning a Metastore, you're essentially enabling Unity Catalog functionality for your workspace.
+Note: A Metastore is a top-level container that's required by Databricks to manage your data sources so by assigning a Metastore, you're essentially enabling Unity Catalog functionality for your workspace.
 
 ### 3. Create External Volumes
 
@@ -149,7 +147,7 @@ Next, upload notebooks from the `default-pipeline/databricks/notebooks` folder t
 - Place the notebooks in your Home folder. If you use a different location, make sure that all the notebooks are in the same folder.
 - Review the notebooks and make sure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-raw/" refers to your "vol-raw" volume inside the "lichess" schema under the "main" catalog.
 
-Here is a brief description of each notebook:
+Here is a brief description of what each notebook does:
 
 - `1-decompress-file`: Extracts the data file from Raw layer to Bronze layer.
 - `2-parse-games`: Parses data from Bronze to Silver layer, converting from PGN to Parquet format.
@@ -162,9 +160,9 @@ For a detailed explanation of the development process behind these notebooks, pl
 
 ### 5. Generate access token and create custom cluster policy
 
-Your Databricks workspace should be ready, now you'll need to generate two parameter values for the Databricks linked service in Data Factory.
+Your Databricks workspace should be ready, the next step will be to generate the following parameter values for the Databricks linked service in Data Factory:
 
-4.1. Generate access token for Data Factory
+4.1. Generate access token
 
 - In your Databricks workspace, go to Settings
 - Select "Developer"
@@ -179,27 +177,24 @@ Your Databricks workspace should be ready, now you'll need to generate two param
 - Save the policy
 - Copy the policy ID for later use in Data Factory
 
-Note: This custom cluster policy defines a single-node cluster. This type of cluster works best for this project because of the limitations surrounding the PGN file format not allowing for fully distributed computing with Spark.
+Note: This custom cluster policy defines a single-node cluster. This type of cluster works best for this project because the PGN file format doesn't fully support Spark's distributed computing capabilities.
 
 ### 6. Configure Data Factory
 
-The last step is to configure Data Factory to connect to Databricks:
+The last step is to configure Data Factory connection to Databricks:
 
 - In Data Factory, go to Manage, click "Linked services"
-- Select the `ls_databricks` linked service
+- Select the "ls_databricks" linked service
 - Provide the Databricks access token and policy ID from step 5
 - Save the linked service
-- Navigate to Author, locate `pl_main` under the Pipeline section
-- Inside the `Process Data in Databricks` activity settings:
-  - Under linked service, select the `ls_databricks` linked service
-  - For the notebook path, browse for the `0-run-all` notebook in your Databricks workspace
+- Navigate to Author, locate "pl_main" under the Pipeline section
+- Inside the "Process Data in Databricks" activity settings:
+  - Under linked service, select the "ls_databricks" linked service
+  - Browse for the `0-run-all` notebook in your Databricks workspace to populate the notebook path.
 - Save the pipeline.
 
-This `pl_main` pipeline orchestrates two important activities:
+This "pl_main" pipeline orchestrates all the data activties, from downloading game from Lichess to parsing them in Databricks.
 
-- Copy from Lichess to Raw: Downloads data from Lichess to the Raw Layer, and
-- Process Data in Databricks: Triggers the `0-process-all` notebook, which executes the three child notebooks, processing data from the Bronze layer to Silver and Gold.
-
-To trigger the pipeline, you’ll need to privide the Month parameter value which specifies the target month in "yyyy-MM" format (e.g., "2024-06" for June 2024)
+To trigger the pipeline, provide the Month parameter value which specifies the target month in "yyyy-MM" format (e.g., "2024-06" for June 2024). Afterwards, the data should be automatically downloaded, processed and stored in its respective containers.
 
 Note: To automate execution, a trigger can be set up. This can be a scheduled or tumbling window trigger based on your use case.
