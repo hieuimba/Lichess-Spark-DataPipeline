@@ -4,11 +4,11 @@
 
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Lichess is a popular online chess platform where millions of chess games are played everyday. Each month, these games are complied and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing these games poses several challenges due to the dataset's large size. Key challenges include:
+Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing these games poses several challenges due to the dataset's large size. Key challenges include:
 
 - Parsing chess games from a large PGN (Portable Game Notation) file
 - Converting and storing these games in a more accessible format
-- Applying custom transformation like filters, aggregation on a large collection of games
+- Applying custom transformations like filters, and aggregation on a large collection of games
 
 This data pipeline aims to address these issues by providing the following features:
 
@@ -28,7 +28,7 @@ This solution streamlines the handling of Lichess's monthly data files, making t
 ## Architecture
 
 See the process diagram for this data pipeline below:
-
+![chess-app - Copy of Page 2 (1).png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dc953b33-bf9b-41c6-b383-66eb071b14ac/c2c43bd0-142e-4486-8be6-ebdb52989703/chess-app_-_Copy_of_Page_2_(1).png)
 The detailed steps are:
 
 1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to ADLS2.
@@ -45,8 +45,8 @@ For “Guess the ELO”, I made some modifications to the data pipeline:
 - Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, more than 20 moves, etc.
 - Gold layer: Applied custom sampling logic to ensure random distribution of chess games. This makes sure that games from all ELO ranges have the same chance to be chosen.
 - Added a final step to transfer the processed dataset into MongoDB for application usage.
-
-The modified notebooks along with Data Factory code are provided [here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/guess-the-elo).
+https://github.com/user-attachments/assets/db1211af-9701-42e1-a60c-ffeefc3eff51
+The modified notebooks along with the Data Factory code are provided [here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/guess-the-elo).
 
 If you're interested in "Guess the ELO", feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
@@ -56,18 +56,18 @@ To recreate this data pipeline, a number of steps are required:
 
 1. Deploy Azure resources using the provided ARM template.
 2. Enable Unity Catalog in the created Databricks workspace.
-3. Create external volumes in Databricks workspace.
+3. Create external volumes in the Databricks workspace.
 4. Import Databricks notebooks
 5. Generate access token and create custom cluster policy for ADF
 6. Configure ADF linked service.
 7. Run pipeline.
 
-The following sections provides the detailed breakdown of each step.
+The following sections provide a detailed breakdown of each step.
 
 ### 1. Deploy resources on Azure
 
 Navigate to Azure portal's Template Deployment service, choose "Build your own template" and paste the provided [ARM template](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/ARMTemplate.json).
-
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/dc953b33-bf9b-41c6-b383-66eb071b14ac/2c87a16a-51a7-4060-b093-479e5fe376ea/Untitled.png)
 This ARM template will deploy:
 
 - ADLS2 storage account with four containers: raw, bronze, silver, gold
@@ -79,7 +79,7 @@ Provide names for these resources in the deployment screen and click "Create" to
 
 ### 2. Enable Unity Catalog
 
-After the resources are deployed, you'll need to grant your Databricks workspace access to the storage account. This involves enabling [Unity Catalog](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/) through creating a Metastore and assigning it to your workspace. Here's how to do it:
+After the resources are deployed, you'll need to grant your Databricks workspace access to the storage account. This involves enabling [Unity Catalog](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/) by creating a Metastore and assigning it to your workspace. Here's how to do it:
 
 2.1. Access the Databricks Account Console:
 
@@ -193,7 +193,7 @@ The last step is to configure Data Factory connection to Databricks:
   - Browse for the `0-run-all` notebook in your Databricks workspace to populate the notebook path.
 - Save the pipeline.
 
-This "pl_main" pipeline orchestrates all the data activties, from downloading game from Lichess to parsing them in Databricks.
+This "pl_main" pipeline orchestrates all the data activities, from downloading games from Lichess to parsing them in Databricks.
 
 To trigger the pipeline, provide the Month parameter value which specifies the target month in "yyyy-MM" format (e.g., "2024-06" for June 2024). Afterwards, the data should be automatically downloaded, processed and stored in its respective containers.
 
