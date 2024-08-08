@@ -123,21 +123,23 @@ Next, you'll need to create external volumes to access the data inside your raw,
 - Provide a name for the credential
 - Enter the Connector ID of your Access Connector for Azure Databricks. (You can find this in the connector's details page in Azure.)
 - Save the credential.
+![image](https://github.com/user-attachments/assets/23cb1b58-58dc-4c56-b3ff-1f1f353e4c53)
 
 3.2. Create External Locations:
 
 - Still in the Catalog tab, under External Data, select "External Locations"
 - Click "Create Location"
-- Provide a name for the location (e.g., "raw")
+- Provide a name for the location (e.g., "location-raw")
 - Enter the ADLS Gen2 path for the container (e.g., "abfss://raw@yourstorageaccount.dfs.core.windows.net/")
 - Select the storage credential you created in step 1
 - Save the location
 - Repeat steps b-f for the other three containers: bronze, silver, and gold.
+![image](https://github.com/user-attachments/assets/1f03f970-7497-4652-ad73-12c2dca6de7c)
 
 3.3. Create a Schema:
 
 - In the Catalog tab, under the main Catalog, click "Create" and select "Schema"
-- Name the schema "lichess"
+- Name the schema "lichess", don't specify the storage location
 - Save the schema.
 
 3.4. Create External Volumes:
@@ -148,14 +150,21 @@ Next, you'll need to create external volumes to access the data inside your raw,
 - Choose the corresponding external location you created in step 2
 - Save the volume
 - Repeat steps a-e for the other three volumes: vol-bronze, vol-silver, and vol-gold.
+![image](https://github.com/user-attachments/assets/20b597bb-dbab-4062-9028-6baac08d1557)
+
+After this step, your schema/database should look like this:
+![image](https://github.com/user-attachments/assets/648e8409-b185-489b-b1ab-c4e5240310d0)
+
 
 ### 4. Import Databricks Notebooks
 
-Next, upload notebooks from the `default-pipeline/databricks/notebooks` folder to your Databricks workspace:
+Next, upload notebooks from the [notebooks folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks/notebooks) to your Databricks workspace:
 
-- Go to the Workspace tab, click "Import" to import the notebooks.
+- Go to the Workspace tab, click "Import" to import from your local machine or provide the link to the files hosted on Github.
 - Place the notebooks in your Home folder. If you use a different location, make sure that all the notebooks are in the same folder.
 - Review the notebooks and make sure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-raw/" refers to your "vol-raw" volume inside the "lichess" schema under the "main" catalog.
+  
+![image](https://github.com/user-attachments/assets/cd79a720-980b-480e-b22e-7f38fc7905ae)
 
 Here is a brief description of what each notebook does:
 
@@ -178,6 +187,7 @@ Your Databricks workspace should be ready, the next step will be to generate the
 - Select "Developer"
 - Next to Access tokens, click "Manage" and select "Generate a new access token"
 - Copy and securely store the new token (it won't be displayed again)
+![image](https://github.com/user-attachments/assets/c1bbe227-2e83-4e83-805f-083f4459d77f)
 
 4.2. Create a custom cluster policy
 
@@ -186,8 +196,9 @@ Your Databricks workspace should be ready, the next step will be to generate the
 - Paste the content from the sparkClusterPolicy file into the policy definition
 - Save the policy
 - Copy the policy ID for later use in Data Factory
+![image](https://github.com/user-attachments/assets/d017fe90-1b2b-4c3e-a41e-f2d26ee8367a)
 
-Note: This custom cluster policy defines a single-node cluster. This type of cluster works best for this project because the PGN file format doesn't fully support Spark's distributed computing capabilities.
+Note: This custom cluster policy defines a single-node cluster. This cluster type works best for this project because the PGN file format doesn't fully support Spark's distributed computing capabilities.
 
 ### 6. Configure Data Factory
 
