@@ -28,7 +28,8 @@ This solution streamlines the handling of Lichess's monthly data files, making t
 ## Architecture
 
 See the process diagram for this data pipeline below:
-![chess-app - Copy of Page 2 (1).png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dc953b33-bf9b-41c6-b383-66eb071b14ac/c2c43bd0-142e-4486-8be6-ebdb52989703/chess-app_-_Copy_of_Page_2_(1).png)
+![default-pipeline](https://github.com/user-attachments/assets/890c6434-f44d-4acb-973b-e54a56bdf7b1)
+
 The detailed steps are:
 
 1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to ADLS2.
@@ -45,7 +46,10 @@ For “Guess the ELO”, I made some modifications to the data pipeline:
 - Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, more than 20 moves, etc.
 - Gold layer: Applied custom sampling logic to ensure random distribution of chess games. This makes sure that games from all ELO ranges have the same chance to be chosen.
 - Added a final step to transfer the processed dataset into MongoDB for application usage.
-https://github.com/user-attachments/assets/db1211af-9701-42e1-a60c-ffeefc3eff51
+
+![gte-pipeline](https://github.com/user-attachments/assets/c6b5b5eb-ffbb-4804-aa15-d9fcc69a0dce)
+
+
 The modified notebooks along with the Data Factory code are provided [here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/guess-the-elo).
 
 If you're interested in "Guess the ELO", feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
@@ -67,13 +71,17 @@ The following sections provide a detailed breakdown of each step.
 ### 1. Deploy resources on Azure
 
 Navigate to Azure portal's Template Deployment service, choose "Build your own template" and paste the provided [ARM template](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/ARMTemplate.json).
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/dc953b33-bf9b-41c6-b383-66eb071b14ac/2c87a16a-51a7-4060-b093-479e5fe376ea/Untitled.png)
+
+![step1](https://github.com/user-attachments/assets/8375fed7-cac0-4ed1-9f2a-2a686634062f)
+
 This ARM template will deploy:
 
 - ADLS2 storage account with four containers: raw, bronze, silver, gold
 - Access Connector for Azure Databricks
 - Empty Databricks workspace
 - Data Factory containing the primary pipeline for this project.
+- 
+![step1-1](https://github.com/user-attachments/assets/62e67efb-686d-41f7-8d5b-2bee6b15d8ba)
 
 Provide names for these resources in the deployment screen and click "Create" to deploy.
 
