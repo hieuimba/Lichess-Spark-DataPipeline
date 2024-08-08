@@ -166,10 +166,15 @@ After this step, your schema/database should look like this:
 Next, upload notebooks from the [notebooks folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks/notebooks) to your Databricks workspace:
 
 - Go to the Workspace tab, click "Import" to import from your local machine or provide the link to the files hosted on Github.
-- Place the notebooks in your Home folder. If you use a different location, make sure that all the notebooks are in the same folder.
-- Review the notebooks and make sure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-raw/" refers to your "vol-raw" volume inside the "lichess" schema under the "main" catalog.
-  
+- Crate a "lichess" folder in your Home directory and place the notebooks in it. Mke sure that all the notebooks are in the same folder.
+
 ![image](https://github.com/user-attachments/assets/cd79a720-980b-480e-b22e-7f38fc7905ae)
+
+- Review the notebooks and make sure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-bronze/" requires "vol-bronze" volume present inside the "lichess" schema under the "main" catalog.
+
+![image](https://github.com/user-attachments/assets/713e94ef-0803-4405-abf9-753c32d655f1)
+
+  
 
 Here is a brief description of what each notebook does:
 
