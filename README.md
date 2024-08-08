@@ -186,7 +186,7 @@ For a detailed explanation of the development process behind these notebooks, pl
 
 Your Databricks workspace should be ready, the next step will be to generate the following parameter values for the Databricks linked service in Data Factory:
 
-4.1. Generate access token
+5.1. Generate access token
 
 - In your Databricks workspace, go to Settings
 - Select "Developer"
@@ -195,15 +195,15 @@ Your Databricks workspace should be ready, the next step will be to generate the
   
 ![image](https://github.com/user-attachments/assets/c1bbe227-2e83-4e83-805f-083f4459d77f)
 
-4.2. Create a custom cluster policy
+5.2. Create a custom cluster policy
 
 - Go to the Compute tab in your Databricks workspace
 - Under Policies, select "Create policy"
-- Paste the content from the [sparkClusterPolicy file](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/databricks/sparkClusterPolicy.json) into the policy definition
+- Paste the content from the [sparkClusterPolicy file](c) into the policy definition
 - Save the policy
 - Copy the policy ID for later use in Data Factory
   
-![image](https://github.com/user-attachments/assets/d017fe90-1b2b-4c3e-a41e-f2d26ee8367a)
+![image](https://github.com/user-attachments/assets/5afa14e2-2e87-49f4-9052-4f6bba43b2fb)
 
 Note: This custom cluster policy defines a single-node cluster. This cluster type works best for this project because the PGN file format doesn't fully support Spark's distributed computing capabilities.
 
@@ -213,15 +213,24 @@ The last step is to configure Data Factory connection to Databricks:
 
 - In Data Factory, go to Manage, click "Linked services"
 - Select the "ls_databricks" linked service
-- Provide the Databricks access token and policy ID from step 5
+- Provide the Databricks access token in the Access Token field
+  
+![image](https://github.com/user-attachments/assets/05fdd227-c5f0-48c6-8951-e28e98746c10)
+
+- Under Advanced, provide the policy ID
+  
+![image](https://github.com/user-attachments/assets/c75a1a39-8254-4a63-9f23-2bf818464365)
+
+
 - Save the linked service
 - Navigate to Author, locate "pl_main" under the Pipeline section
 - Inside the "Process Data in Databricks" activity settings:
   - Under linked service, select the "ls_databricks" linked service
   - Browse for the `0-run-all` notebook in your Databricks workspace to populate the notebook path.
-- Save the pipeline.
 
-This "pl_main" pipeline orchestrates all the data activities, from downloading games from Lichess to parsing them in Databricks.
+![image](https://github.com/user-attachments/assets/a7056166-a55c-477e-b52f-9923d62b1e71)
+
+- Save the pipeline.
 
 To trigger the pipeline, provide the Month parameter value which specifies the target month in "yyyy-MM" format (e.g., "2024-06" for June 2024). Afterwards, the data should be automatically downloaded, processed and stored in its respective containers.
 
