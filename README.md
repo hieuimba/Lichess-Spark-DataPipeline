@@ -28,6 +28,7 @@ This solution streamlines the handling of Lichess's monthly data files, making t
 ## Architecture
 
 See the process diagram for this data pipeline below:
+
 ![default-pipeline](https://github.com/user-attachments/assets/890c6434-f44d-4acb-973b-e54a56bdf7b1)
 
 The detailed steps are:
@@ -155,6 +156,7 @@ Next, you'll need to create external volumes to access the data inside your raw,
 ![image](https://github.com/user-attachments/assets/20b597bb-dbab-4062-9028-6baac08d1557)
 
 After this step, your schema/database should look like this:
+
 ![image](https://github.com/user-attachments/assets/648e8409-b185-489b-b1ab-c4e5240310d0)
 
 
@@ -189,6 +191,7 @@ Your Databricks workspace should be ready, the next step will be to generate the
 - Select "Developer"
 - Next to Access tokens, click "Manage" and select "Generate a new access token"
 - Copy and securely store the new token (it won't be displayed again)
+  
 ![image](https://github.com/user-attachments/assets/c1bbe227-2e83-4e83-805f-083f4459d77f)
 
 4.2. Create a custom cluster policy
@@ -198,6 +201,7 @@ Your Databricks workspace should be ready, the next step will be to generate the
 - Paste the content from the sparkClusterPolicy file into the policy definition
 - Save the policy
 - Copy the policy ID for later use in Data Factory
+  
 ![image](https://github.com/user-attachments/assets/d017fe90-1b2b-4c3e-a41e-f2d26ee8367a)
 
 Note: This custom cluster policy defines a single-node cluster. This cluster type works best for this project because the PGN file format doesn't fully support Spark's distributed computing capabilities.
