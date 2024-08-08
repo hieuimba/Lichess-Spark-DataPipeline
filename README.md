@@ -123,6 +123,7 @@ Next, you'll need to create external volumes to access the data inside your raw,
 - Provide a name for the credential
 - Enter the Connector ID of your Access Connector for Azure Databricks. (You can find this in the connector's details page in Azure.)
 - Save the credential.
+  
 ![image](https://github.com/user-attachments/assets/23cb1b58-58dc-4c56-b3ff-1f1f353e4c53)
 
 3.2. Create External Locations:
@@ -134,6 +135,7 @@ Next, you'll need to create external volumes to access the data inside your raw,
 - Select the storage credential you created in step 1
 - Save the location
 - Repeat steps b-f for the other three containers: bronze, silver, and gold.
+  
 ![image](https://github.com/user-attachments/assets/1f03f970-7497-4652-ad73-12c2dca6de7c)
 
 3.3. Create a Schema:
