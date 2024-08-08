@@ -80,7 +80,7 @@ This ARM template will deploy:
 - Access Connector for Azure Databricks
 - Empty Databricks workspace
 - Data Factory containing the primary pipeline for this project.
-- 
+  
 ![step1-1](https://github.com/user-attachments/assets/62e67efb-686d-41f7-8d5b-2bee6b15d8ba)
 
 Provide names for these resources in the deployment screen and click "Create" to deploy.
@@ -100,6 +100,8 @@ After the resources are deployed, you'll need to grant your Databricks workspace
 - If you don't already have a Metastore for your region, create a new one
 - Choose a generic name for the Metastore, as there's a limit of one per region
 - You don't need to provide an ADLS2 path, as you'll be using external tables.
+- 
+![metastore](https://github.com/user-attachments/assets/d7469555-f756-4de4-9d1a-76affb7b1895)
 
 2.3. Assign the Metastore to Your Workspace:
 
