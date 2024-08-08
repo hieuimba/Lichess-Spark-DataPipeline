@@ -153,6 +153,7 @@ Next, you'll need to create external volumes to access the data inside your raw,
 - Choose the corresponding external location you created in step 2
 - Save the volume
 - Repeat steps a-e for the other three volumes: vol-bronze, vol-silver, and vol-gold.
+
 ![image](https://github.com/user-attachments/assets/20b597bb-dbab-4062-9028-6baac08d1557)
 
 After this step, your schema/database should look like this:
