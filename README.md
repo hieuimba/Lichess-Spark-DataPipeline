@@ -199,7 +199,7 @@ Your Databricks workspace should be ready, the next step will be to generate the
 
 - Go to the Compute tab in your Databricks workspace
 - Under Policies, select "Create policy"
-- Paste the content from the sparkClusterPolicy file into the policy definition
+- Paste the content from the [sparkClusterPolicy file](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/databricks/sparkClusterPolicy.json) into the policy definition
 - Save the policy
 - Copy the policy ID for later use in Data Factory
   
