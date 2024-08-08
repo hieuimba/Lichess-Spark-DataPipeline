@@ -170,7 +170,7 @@ Next, upload notebooks from the [notebooks folder](https://github.com/hieuimba/L
 
 ![image](https://github.com/user-attachments/assets/cd79a720-980b-480e-b22e-7f38fc7905ae)
 
-- Review the notebooks and make sure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-bronze/" requires "vol-bronze" volume present inside the "lichess" schema under the "main" catalog.
+- Review the notebooks and make sure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-bronze/" requires the "vol-bronze" volume present inside the "lichess" schema under the "main" catalog.
 
 ![image](https://github.com/user-attachments/assets/713e94ef-0803-4405-abf9-753c32d655f1)
 
@@ -231,7 +231,7 @@ The last step is to configure Data Factory connection to Databricks:
 - Navigate to Author, locate "pl_main" under the Pipeline section
 - Inside the "Process Data in Databricks" activity settings:
   - Under linked service, select the "ls_databricks" linked service
-  - Browse for the `0-run-all` notebook in your Databricks workspace to populate the notebook path.
+  - Browse for the `0-run-all` notebook in your Databricks workspace to populate the notebook path
 
 ![image](https://github.com/user-attachments/assets/a7056166-a55c-477e-b52f-9923d62b1e71)
 
