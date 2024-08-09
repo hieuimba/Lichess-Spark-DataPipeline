@@ -4,18 +4,18 @@
 
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing these games poses several challenges due to the dataset's large size. Key challenges include:
+Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing this large dataset of chess games presents several key challenges:
 
-- Parsing chess games from a large PGN (Portable Game Notation) file
-- Converting and storing these games in a more accessible format
-- Applying custom transformations like filters, and aggregation on a large collection of games
+- Parsing: Extracting all the chess games from a large PGN (Portable Game Notation) file can be very time-consuming
+- Storage and Access: The PGN file format makes it difficult to efficiently store and access individual chess games
+- Transformations: Applying custom filters and aggregations at scale adds another layer of difficulty.
 
 This data pipeline aims to address these issues by providing the following features:
 
 - Automated processing of monthly data files using an Azure-based serverless architecture.
 - Efficient extraction and parsing of large volumes of chess games using Spark Databricks. The current processing time is about 60 minutes for 100 million games (one month's worth of data).
 - Storage of parsed games in Parquet format, optimizing for storage and retrieval
-- Fully customizable filtering and aggregation capabilities leveraging Spark's functionality.
+- Fully customizable filtering and aggregation capabilities using Spark.
 
 This solution streamlines the handling of Lichess's monthly data files, making them more accessible and manageable for developers and researchers.
 
@@ -31,7 +31,7 @@ See the process diagram for this data pipeline below:
 
 ![default-pipeline](https://github.com/user-attachments/assets/890c6434-f44d-4acb-973b-e54a56bdf7b1)
 
-The detailed steps are:
+The pipline has four main stages:
 
 1. **Copy Data:** Data Factory copies the compressed data file from the Lichess database to ADLS2.
 2. **Decompress File:** The downloaded ZST file is decompressed into PGN format.
@@ -40,9 +40,9 @@ The detailed steps are:
 
 ## Application
 
-As an example of how this pipeline can be customized for specific applications, I use the data from this pipeline for my game "Guess The ELO". It's a chess-based quiz game where your goal is to guess the correct Elo rating of a chess match.
+As an example of how this pipeline can be used and customized for chess-related projects, I use the data from this pipeline for my game "Guess The ELO". It's a chess-based quiz game where your goal is to guess the correct Elo rating of a chess match.
 
-For “Guess the ELO”, I made some modifications to the data pipeline:
+For “Guess the ELO”, I made some modifications to the default pipeline:
 
 - Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, more than 20 moves, etc.
 - Gold layer: Applied custom sampling logic to ensure random distribution of chess games. This makes sure that games from all ELO ranges have the same chance to be chosen.
@@ -88,7 +88,7 @@ Provide names for these resources in the deployment screen and click "Create" to
 
 ### 2. Enable Unity Catalog
 
-After the resources are deployed, you'll need to grant your Databricks workspace access to the storage account. This involves enabling [Unity Catalog](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/) by creating a Metastore and assigning it to your workspace. Here's how to do it:
+After the resources are deployed, you'll need to grant your Databricks workspace access to your storage account. This involves enabling [Unity Catalog](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/) by creating a Metastore and assigning it to your workspace. Here's how to do it:
 
 2.1. Access the Databricks Account Console:
 
@@ -106,7 +106,7 @@ After the resources are deployed, you'll need to grant your Databricks workspace
 
 2.3. Assign the Metastore to Your Workspace:
 
-- After creating or selecting an existing Metastore, you'll see an option to assign it to your workspace
+- After creating or selecting an existing Metastore, you'll see an option to assign it to your workspace in the next screen
 - Select your workspace and confirm the assignment.
 
 Note: A Metastore is a top-level container that's required by Databricks to manage your data sources so by assigning a Metastore, you're essentially enabling Unity Catalog functionality for your workspace.
@@ -166,11 +166,11 @@ After this step, your schema/database should look like this:
 Next, upload notebooks from the [notebooks folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks/notebooks) to your Databricks workspace:
 
 - Go to the Workspace tab, click "Import" to import from your local machine or provide the link to the files hosted on Github.
-- Crate a "lichess" folder in your Home directory and place the notebooks in it. Mke sure that all the notebooks are in the same folder.
+- Create a "lichess" folder in your Home directory and place the notebooks in it. Make sure that all the notebooks are in the same folder.
 
 ![image](https://github.com/user-attachments/assets/cd79a720-980b-480e-b22e-7f38fc7905ae)
 
-- Review the notebooks and make sure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-bronze/" requires the "vol-bronze" volume present inside the "lichess" schema under the "main" catalog.
+- Review the notebooks to ensure that the paths to your volumes are correctly defined. For example, "/Volumes/main/lichess/vol-bronze/" requires the "vol-bronze" volume present inside the "lichess" schema under the "main" catalog. If you've been following the recommended naming conventions then you shouldn't need to make any changes.
 
 ![image](https://github.com/user-attachments/assets/713e94ef-0803-4405-abf9-753c32d655f1)
 
@@ -185,18 +185,18 @@ Here is a brief description of what each notebook does:
 
 These notebooks form the core of the data pipeline, managing the decompression, parsing, and analysis of chess game data. They're designed to be executed as a single activity in Azure Data Factory.
 
-For a detailed explanation of the development process behind these notebooks, please refer to this blog post:
+<!-- For a detailed explanation of the development process behind these notebooks, please refer to this blog post: -->
 
 ### 5. Generate access token and create custom cluster policy
 
-Your Databricks workspace should be ready, the next step will be to generate the following parameter values for the Databricks linked service in Data Factory:
+Your Databricks workspace should be ready, the next step is to generate the following parameter values for the Databricks linked service in ADF:
 
 5.1. Generate access token
 
 - In your Databricks workspace, go to Settings
 - Select "Developer"
 - Next to Access tokens, click "Manage" and select "Generate a new access token"
-- Copy and securely store the new token (it won't be displayed again)
+- Copy and save the new token (it won't be displayed again)
   
 ![image](https://github.com/user-attachments/assets/c1bbe227-2e83-4e83-805f-083f4459d77f)
 
@@ -239,4 +239,4 @@ The last step is to configure Data Factory connection to Databricks:
 
 To trigger the pipeline, provide the Month parameter value which specifies the target month in "yyyy-MM" format (e.g., "2024-06" for June 2024). Afterwards, the data should be automatically downloaded, processed and stored in its respective containers.
 
-Note: To automate execution, a trigger can be set up. This can be a scheduled or tumbling window trigger based on your use case.
+Note: To automate execution for every month, a trigger can be set up. This can be a scheduled or tumbling window trigger based on your use case.
