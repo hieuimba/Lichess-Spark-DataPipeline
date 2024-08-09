@@ -4,9 +4,9 @@
 
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing this large dataset of chess games presents several key challenges:
+Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing this large dataset of chess games can be difficult due to some key challenges:
 
-- Parsing: Extracting all the chess games from a large PGN (Portable Game Notation) file can be very time-consuming
+- Parsing: Extracting all the chess games from a large PGN (Portable Game Notation) file is very time-consuming
 - Storage and Access: The PGN file format makes it difficult to efficiently store and access individual chess games
 - Transformations: Applying custom filters and aggregations at scale adds another layer of difficulty.
 
