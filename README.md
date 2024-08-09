@@ -17,7 +17,7 @@ This data pipeline aims to address these issues by providing the following featu
 - Storage of parsed games in Parquet format, optimizing for storage and retrieval
 - Fully customizable filtering and aggregation capabilities using Spark.
 
-This solution streamlines the handling of Lichess's monthly data files, making them more accessible and manageable for developers and researchers.
+This solution streamlines the handling of Lichess's monthly data files, making the data more accessible and manageable for developers and researchers.
 
 ## Technologies used
 
@@ -40,12 +40,12 @@ The pipline has four main stages:
 
 ## Application
 
-As an example of how this pipeline can be used and customized for chess-related projects, I use the data from this pipeline for my game "Guess The ELO". It's a chess-based quiz game where your goal is to guess the correct Elo rating of a chess match.
+As an example of how this pipeline can be used and customized for specific applications, I use the data from this pipeline for my game "Guess The ELO". It's a chess-based quiz game where your goal is to guess the Elo rating of a chess match.
 
 For “Guess the ELO”, I made some modifications to the default pipeline:
 
 - Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, more than 20 moves, etc.
-- Gold layer: Applied custom sampling logic to ensure random distribution of chess games. This makes sure that games from all ELO ranges have the same chance to be chosen.
+- Gold layer: Applied custom sampling logic to ensure ELO ratings are randomly distributed (as opposed to normally distributed). This makes sure that all games from all ELO ranges have the same chance to be chosen.
 - Added a final step to transfer the processed dataset into MongoDB for application usage.
 
 ![gte-pipeline](https://github.com/user-attachments/assets/c6b5b5eb-ffbb-4804-aa15-d9fcc69a0dce)
