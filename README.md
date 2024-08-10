@@ -49,7 +49,11 @@ Here is a brief description of each one followed by a more detailed explaination
 
 In the `2-parse-games` notebook, the parsing process starts by reading the decompressed data file into a DataFrame using `spark.read.text`, where each row represents a single line from the original file. From there, the Key and Value information is extracted, and a start-of-game identifier called GameID is assigned to the Event tag. This effectively groups each Event line and the lines following it into a unique game:
 
+![notebook](https://github.com/user-attachments/assets/c354bf75-6790-401c-a67c-07c605677c41)
+
 Once every lines are assigned with their GameIDs, a pivot operation transforms a group of lines with the same GameIDs into one game record, resulting in the final table: 
+
+![notebook2](https://github.com/user-attachments/assets/38b7dfe2-7db9-44c3-b16d-4668341853db)
 
 However, this pivot operation is very expensive as it requires the whole dataset to be shuffled into a single partition before processing. This happens because the data needs to be sorted in a particular order for the GameIDs to be correctly assigned. Considering the size of the dataset, this can lead to massive data spills and significantly slow down processing times.
 
