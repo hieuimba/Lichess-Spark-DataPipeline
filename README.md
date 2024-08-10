@@ -39,7 +39,7 @@ The pipline has four main stages:
 4. **(Optional) Analyze Games:** Spark can be used to further filter, enhance, or aggregate the dataset.
 
 ## Spark Notebooks
-The Spark notebooks below form the core of the data pipeline, managing the decompression, parsing, and analysis of chess game data. They can be found in [this folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks)
+The Spark notebooks below form the core of the data pipeline, managing the decompression, parsing, and analysis of chess game data. They can be found in [this folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks/notebooks).
 Here is a brief description of each one followed by a more detailed explaination of the parsing process:
 
 - `1-decompress-file`: Extracts the data file from Raw layer to Bronze layer
