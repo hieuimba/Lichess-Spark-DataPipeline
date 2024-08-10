@@ -248,7 +248,8 @@ The last step is to configure Data Factory connection to Databricks:
 ![image](https://github.com/user-attachments/assets/a7056166-a55c-477e-b52f-9923d62b1e71)
 
 - Save the pipeline.
-
+  
+### 7. Run pipeline
 To trigger the pipeline, provide the Month parameter value which specifies the target month in "yyyy-MM" format (e.g., "2024-06" for June 2024). Afterwards, the data should be automatically downloaded, processed and stored in its respective containers.
 
 Note: To automate execution for every month, a trigger can be set up. This can be a scheduled or tumbling window trigger based on your use case.
