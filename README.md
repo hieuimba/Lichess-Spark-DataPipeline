@@ -4,18 +4,18 @@
 
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published on the Lichess database for public use, making them a great data source for chess-related projects. However, extracting and processing this large dataset of chess games can be difficult due to some key challenges:
+Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published for free on the Lichess database, making them a great data source for chess-related projects. However, extracting and processing this dataset in bulk can be challenging due to two key reasons:
 
-- Parsing: Extracting all the chess games from a large PGN (Portable Game Notation) file is very time-consuming
-- Storage and Access: The PGN file format makes it difficult to efficiently store and access individual chess games
-- Transformations: Applying custom filters and aggregations at scale adds another layer of difficulty.
+- The PGN format: The Portable Game Notation format doesn't allow for filtering or aggregations meaning the games need to be parsed and indexed before they can be accessed.
+
+- Size: Each monthly file from the database contains up to 100 million games which is about 350GB when decompressed. Processing files of this size can be time-consuming and expensive using traditional methods like Python.
 
 This data pipeline aims to address these issues by providing the following features:
 
-- Automated processing of monthly data files using an Azure-based serverless architecture.
-- Efficient extraction and parsing of large volumes of chess games using Spark Databricks. The current processing time is about 60 minutes for 100 million games (one month's worth of data).
-- Storage of parsed games in Parquet format, optimizing for storage and retrieval
-- Fully customizable filtering and aggregation capabilities using Spark.
+- Automated Processing: Monthly data files are processed automatically using a serverless architecture.
+- Efficient Parsing: Large volumes of chess games are parsed efficiently using Spark, with a current processing time of about 60 minutes for 100 million games (one month's worth of data)
+- Optimized Storage: Parsed games are stored in Parquet format, optimizing both storage and retrieval.
+- Customizable Transformations: The pipeline allows fully customizable transformation capabilities at scale like filtering and aggregation using Spark.
 
 This solution streamlines the handling of Lichess's monthly data files, making the data more accessible and manageable for developers and researchers.
 
@@ -38,20 +38,37 @@ The pipline has four main stages:
 3. **Parse Games:** Spark parses the PGN file, extracting individual chess games and storing them into Parquet format.
 4. **(Optional) Analyze Games:** Spark can be used to further filter, enhance, or aggregate the dataset.
 
+## Spark Notebooks
+The Spark notebooks below form the core of the data pipeline, managing the decompression, parsing, and analysis of chess game data. They can be found in [this folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks)
+Here is a brief description of each one followed by a more detailed explaination of the parsing process:
+
+- `1-decompress-file`: Extracts the data file from Raw layer to Bronze layer
+- `2-parse-games`: Parses data from Bronze to Silver layer, converting from PGN to Parquet format
+- `3-analyze-games`: Template for custom Spark logic (filtering, enhancing, or aggregating data)
+- `0-run-all`: Orchestrates the execution of the above notebooks
+
+In the `2-parse-games` notebook, the parsing process starts by reading the decompressed data file into a DataFrame using `spark.read.text`, where each row represents a single line from the original file. From there, the Key and Value information is extracted, and a start-of-game identifier called GameID is assigned to the Event tag. This effectively groups each Event line and the lines following it into a unique game:
+
+Once every lines are assigned with their GameIDs, a pivot operation transforms a group of lines with the same GameIDs into one game record, resulting in the final table: 
+
+However, this pivot operation is very expensive as it requires the whole dataset to be shuffled into a single partition before processing. This happens because the data needs to be sorted in a particular order for the GameIDs to be correctly assigned. Considering the size of the dataset, this can lead to massive data spills and significantly slow down processing times.
+
+To overcome this issue, the data file needed to be split into chunks during the decompression step in `1-decompress-file` before being passed to `2-parse-games` for parsing. Afterwards, to enable concurrent processing across all cores, the `concurrent.futures` module is used to process the chunks in parallel.
+
 ## Application
 
 As an example of how this pipeline can be used and customized for specific applications, I use the data from this pipeline for my game "Guess The ELO". It's a chess-based quiz game where your goal is to guess the Elo rating of a chess match.
 
 For “Guess the ELO”, I made some modifications to the default pipeline:
 
-- Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, more than 20 moves, etc.
+- Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, with more than 20 moves, etc.
 - Gold layer: Applied custom sampling logic to ensure ELO ratings are randomly distributed (as opposed to normally distributed). This makes sure that all games from all ELO ranges have the same chance to be chosen.
 - Added a final step to transfer the processed dataset into MongoDB for application usage.
 
 ![gte-pipeline](https://github.com/user-attachments/assets/c6b5b5eb-ffbb-4804-aa15-d9fcc69a0dce)
 
 
-The modified notebooks along with the Data Factory code are provided [here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/guess-the-elo).
+The modified notebooks are provided [here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/guess-the-elo-pipeline/databricks/notebooks.
 
 If you're interested in "Guess the ELO", feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
@@ -175,15 +192,6 @@ Next, upload notebooks from the [notebooks folder](https://github.com/hieuimba/L
 ![image](https://github.com/user-attachments/assets/713e94ef-0803-4405-abf9-753c32d655f1)
 
   
-
-Here is a brief description of what each notebook does:
-
-- `1-decompress-file`: Extracts the data file from Raw layer to Bronze layer.
-- `2-parse-games`: Parses data from Bronze to Silver layer, converting from PGN to Parquet format.
-- `3-analyze-games`: Template for custom Spark logic (filtering, enhancing, or aggregating data)
-- `0-run-all`: Orchestrates the execution of the above notebooks
-
-These notebooks form the core of the data pipeline, managing the decompression, parsing, and analysis of chess game data. They're designed to be executed as a single activity in Azure Data Factory.
 
 <!-- For a detailed explanation of the development process behind these notebooks, please refer to this blog post: -->
 
