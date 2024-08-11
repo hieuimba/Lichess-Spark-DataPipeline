@@ -4,18 +4,17 @@
 
 This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
 
-Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published for free on the Lichess database, making them a great data source for chess-related projects. However, extracting and processing this dataset in bulk can be challenging due to two key reasons:
+Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published for free on the Lichess database, making them a great data source for chess-related projects. However, extracting theses games can be challenging due to two key reasons:
 
-- The PGN format: The Portable Game Notation format doesn't allow for filtering or aggregations meaning the games need to be parsed and indexed before they can be accessed.
+- The PGN format: The Portable Game Notation format doesn't have a natural index for games so filtering or aggregating games requires first parsing the games into a JSON or tabular format.
 
 - Size: Each monthly file from the database contains up to 100 million games which is about 350GB when decompressed. Processing files of this size can be time-consuming and expensive using traditional methods like Python.
 
 This data pipeline aims to address these issues by providing the following features:
-
-- Automated Processing: Monthly data files are processed automatically using a serverless architecture.
-- Efficient Parsing: Large volumes of chess games are parsed efficiently using Spark, with a current processing time of about 60 minutes for 100 million games (one month's worth of data)
-- Optimized Storage: Parsed games are stored in Parquet format, optimizing both storage and retrieval.
-- Customizable Transformations: The pipeline allows fully customizable transformation capabilities at scale like filtering and aggregation using Spark.
+- Processing with Spark: Leveraging Spark to process the data file in parallel results in a quick processing time of 60 minutes for 100 million games.
+- Parquet Format: Chess games are parsed from PGN format into Parquet format, which is optimized for storage, data analysis, and transformation.
+- Monthly Processing: Monthly data files can be processed automatically every month using a serverless architecture.
+- Customizable Transformations: Using Spark, the pipeline allows for fully customizable transformation capabilities like filtering and aggregation at scale.
 
 This solution streamlines the handling of Lichess's monthly data files, making the data more accessible and manageable for developers and researchers.
 
@@ -47,17 +46,17 @@ Here is a brief description of each one followed by a more detailed explaination
 - `3-analyze-games`: Template for custom Spark logic (filtering, enhancing, or aggregating data)
 - `0-run-all`: Orchestrates the execution of the above notebooks
 
-In the `2-parse-games` notebook, the parsing process starts by reading the decompressed data file into a DataFrame using `spark.read.text`, where each row represents a single line from the original file. From there, the Key and Value information is extracted, and a start-of-game identifier called GameID is assigned to the Event tag. This effectively groups each Event line and the lines following it into a unique game:
+In the `2-parse-games` notebook, the parsing process starts by reading the decompressed data file into a DataFrame, where each row represents a single line from the original file. From there, the Key and Value information is extracted, and a start-of-game identifier called GameID is assigned to the Event tag. This effectively groups each Event line and the lines following it into a unique game:
 
 ![notebook](https://github.com/user-attachments/assets/c354bf75-6790-401c-a67c-07c605677c41)
 
-Once every lines are assigned with their GameIDs, a pivot operation transforms a group of lines with the same GameIDs into one game record, resulting in the final table: 
+Once every lines are assigned with their GameIDs, a pivot operation transforms a group of lines with the same GameID into one game record, resulting in the final table: 
 
 ![notebook2](https://github.com/user-attachments/assets/38b7dfe2-7db9-44c3-b16d-4668341853db)
 
-However, this pivot operation is very expensive as it requires the whole dataset to be shuffled into a single partition before processing. This happens because the data needs to be sorted in a particular order for the GameIDs to be correctly assigned. Considering the size of the dataset, this can lead to massive data spills and significantly slow down processing times.
+However, this pivot operation is potentially expensive as it requires the whole dataset to be shuffled into a single partition before processing. This happens because the data needs to be sorted in a particular order for the GameIDs to be correctly assigned. Considering the size of the dataset, this can lead to massive data spills and significantly slow down the processing time.
 
-To overcome this issue, the data file needed to be split into chunks during the decompression step in `1-decompress-file` before being passed to `2-parse-games` for parsing. Afterwards, to enable concurrent processing across all cores, the `concurrent.futures` module is used to process the chunks in parallel.
+To overcome this issue, the data file needed to be split into chunks first during the decompression step in `1-decompress-file` before being passed to `2-parse-games` for parsing. Afterwards, the `concurrent.futures` module is used to process the chunks in parallel and enable concurrent processing across all cores.
 
 ## Application
 
@@ -66,7 +65,7 @@ As an example of how this pipeline can be used and customized for specific appli
 For “Guess the ELO”, I made some modifications to the default pipeline:
 
 - Silver layer: Added additional filtering logic after parsing to select suitable chess games such as games with evaluation, with more than 20 moves, etc.
-- Gold layer: Applied custom sampling logic to ensure ELO ratings are randomly distributed (as opposed to normally distributed). This makes sure that all games from all ELO ranges have the same chance to be chosen.
+- Gold layer: Applied custom sampling logic to ensure ELO ratings are randomly distributed (as opposed to normally distributed). This makes sure that games from all ELO ranges have the same chance to be shown to the player.
 - Added a final step to transfer the processed dataset into MongoDB for application usage.
 
 ![gte-pipeline](https://github.com/user-attachments/assets/c6b5b5eb-ffbb-4804-aa15-d9fcc69a0dce)
@@ -74,7 +73,7 @@ For “Guess the ELO”, I made some modifications to the default pipeline:
 
 The modified notebooks are provided [here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/guess-the-elo-pipeline/databricks/notebooks).
 
-If you're interested in "Guess the ELO", feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
+Addtionally, if you're interested in "Guess the ELO", feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
 ## Usage
 
@@ -92,7 +91,7 @@ The following sections provide a detailed breakdown of each step.
 
 ### 1. Deploy resources on Azure
 
-Navigate to Azure portal's Template Deployment service, choose "Build your own template" and paste the provided [ARM template](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/ARMTemplate.json).
+Navigate to Azure portal's Template Deployment service, choose "Build your own template" and paste the provided [ARM template](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/default-pipeline/ARMTemplate.json) there.
 
 ![step1](https://github.com/user-attachments/assets/8375fed7-cac0-4ed1-9f2a-2a686634062f)
 
@@ -130,7 +129,7 @@ After the resources are deployed, you'll need to grant your Databricks workspace
 - After creating or selecting an existing Metastore, you'll see an option to assign it to your workspace in the next screen
 - Select your workspace and confirm the assignment.
 
-Note: A Metastore is a top-level container that's required by Databricks to manage your data sources so by assigning a Metastore, you're essentially enabling Unity Catalog functionality for your workspace.
+Note: A Metastore is a top-level container for managing data sources that's required by Unity Catalog so by assigning a Metastore, you're essentially enabling Unity Catalog functionality for your workspace.
 
 ### 3. Create External Volumes
 
@@ -208,7 +207,7 @@ Your Databricks workspace should be ready, the next step is to generate the foll
 - In your Databricks workspace, go to Settings
 - Select "Developer"
 - Next to Access tokens, click "Manage" and select "Generate a new access token"
-- Copy and save the new token (it won't be displayed again)
+- Copy and save the new token.
   
 ![image](https://github.com/user-attachments/assets/c1bbe227-2e83-4e83-805f-083f4459d77f)
 
@@ -216,13 +215,13 @@ Your Databricks workspace should be ready, the next step is to generate the foll
 
 - Go to the Compute tab in your Databricks workspace
 - Under Policies, select "Create policy"
-- Paste the content from the [sparkClusterPolicy file](c) into the policy definition
+- Paste the content from the [sparkClusterPolicy file](c) into the policy definition field
 - Save the policy
-- Copy the policy ID for later use in Data Factory
+- Copy the policy ID for later use in Data Factory.
   
 ![image](https://github.com/user-attachments/assets/5afa14e2-2e87-49f4-9052-4f6bba43b2fb)
 
-Note: This custom cluster policy defines a single-node cluster. This cluster type works best for this project because the PGN file format doesn't fully support Spark's distributed computing capabilities.
+Note: This custom cluster policy defines a single-node cluster. This cluster type works best for this data pipeline because the `concurrent.futures` module is used to distribute tasks across cores which only works on the driver node.
 
 ### 6. Configure Data Factory
 
@@ -230,7 +229,7 @@ The last step is to configure Data Factory connection to Databricks:
 
 - In Data Factory, go to Manage, click "Linked services"
 - Select the "ls_databricks" linked service
-- Provide the Databricks access token in the Access Token field
+- Provide the Databricks access token in the Access Token field. You might need to choose the cluster node type again, choose Standard_DS4_v2. 
   
 ![image](https://github.com/user-attachments/assets/05fdd227-c5f0-48c6-8951-e28e98746c10)
 
@@ -248,6 +247,8 @@ The last step is to configure Data Factory connection to Databricks:
 ![image](https://github.com/user-attachments/assets/a7056166-a55c-477e-b52f-9923d62b1e71)
 
 - Save the pipeline.
+
+Note: The default cluster type is an 8 core Standard_DS4_v2 cluster. In my tests, I've found that this cluster is the best option in terms of processing time and cost compared to the 4 and 16 cores versions. Upgrading to a larger cluster will improve processing time but comes with extra costs which might not be worth it.
   
 ### 7. Run pipeline
 To trigger the pipeline, provide the Month parameter value which specifies the target month in "yyyy-MM" format (e.g., "2024-06" for June 2024). Afterwards, the data should be automatically downloaded, processed and stored in its respective containers.
