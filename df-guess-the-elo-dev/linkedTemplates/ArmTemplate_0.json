@@ -741,7 +741,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/guess-the-elo/databricks/0-run-all",
+							"notebookPath": "/Repos/hieuimba@gmail.com/Lichess-Spark-DataPipeline/guess-the-elo-pipeline/databricks/notebooks/0-run-all",
 							"baseParameters": {
 								"month": {
 									"value": "@pipeline().parameters.Month",
@@ -764,7 +764,7 @@
 					}
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-06-04T02:15:53Z"
+				"lastPublishTime": "2024-07-31T01:29:24Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_databricks')]"
