@@ -13,7 +13,8 @@ print(f"Filtering games from: {silver_dir} \n to {gold_dir}")
 
 # COMMAND ----------
 
-
+# This notebook provides some example of using Spark to analyze the parsed chess game data.
+# Feel free to modify these examples to fit your needs or write your own custom Spark logic.
 from pyspark.sql.functions import col, count, avg, when
 
 df = spark.read.parquet(silver_dir)
