@@ -2,19 +2,19 @@
 
 ## Description
 
-This project is a data pipeline designed to extract and parse monthly chess games from the Lichess database.
+This project is a data pipeline designed to extract and parse monthly chess games from the [Lichess database](https://database.lichess.org/).
 
-Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published for free on the Lichess database, making them a great data source for chess-related projects. However, extracting and processing theses games can be challenging due to two key reasons:
+Lichess is a popular online chess platform where millions of chess games are played every day. Each month, these games are compiled and published for free on the Lichess database, making them a great data source for chess-related projects. However, extracting and processing theses games poses two key challenges:
 
 - The PGN format: The Portable Game Notation format doesn't have a natural indexing system, making it difficult to access specific games or perform filtering and aggregation. As a result, PGN games must first be parsed into a JSON or tabular format to support these operations.
 
 - Size: Each monthly file from the database contains up to 100 million games which is about 350GB when decompressed. Processing files of this size can be time-consuming and expensive using traditional methods like Python.
 
 This data pipeline aims to address these issues by providing the following features:
-- Processing with Spark: Leveraging Spark to process the data file in parallel results in a quick processing time of 60 minutes for 100 million games.
-- Parquet Format: Chess games are parsed from PGN format into Parquet format, which is optimized for efficient storage and data analysis.
-- Customizable Transformations: Using Spark, the pipeline allows for fully customizable transformation capabilities like filtering and aggregation at scale.
-- Automated Processing: Monthly data files can be processed automatically every month using a serverless architecture.
+- Processing with Spark: Utilizing Apache Spark for parallel processing, the pipeline can handle 100 million games in just under 60 minutes.
+- Parquet Format: Chess games are parsed from PGN to Parquet format, optimizing storage and data analysis capabilities.
+- Flexible Transformations: Spark enables customizable, large-scale data transformations such as filtering and aggregation.
+- Automated Processing: A serverless architecture enables automatic monthly processing of new data files.
 
 This solution streamlines the handling of Lichess's monthly data files, making the data more accessible and manageable for developers and researchers.
 
@@ -38,16 +38,17 @@ The pipline has four main stages:
 4. **(Optional) Analyze Games:** Spark can be used to further filter, enhance, or aggregate the dataset.
 
 ## Spark Notebooks
-The Spark notebooks below form the core of the data pipeline, managing the decompression, parsing, and analysis of chess game data. They can be found in [this folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks/notebooks).
 
-Here is a brief description of each notebook:
+The core of the data pipeline consists of several Spark notebooks, each responsible for a specific stage of processing:
 
-- `1-decompress-file`: Extracts the data file from Raw layer to Bronze layer
+- `1-decompress-file`: Extracts data from the Raw layer to the Bronze layer.
 - `2-parse-games`: Parses data from Bronze to Silver layer, converting it from PGN to Parquet format
-- `3-analyze-games`: Analyzes the parsed chess games and saves the result in the Gold layer. Input your custom Spark logic here to transform the data as needed
+- `3-analyze-games`:  Performs custom analysis on parsed games, saving results in the Gold layer. Input your custom Spark logic here to transform the data as needed.
 - `0-run-all`: Orchestrates the execution of the above notebooks.
 
-In the `2-parse-games` notebook, the parsing process involves several key steps to transform the decompressed PGN data file into the Parquet format. Here's a detailed explanation:
+All the above notebooks can be found in [this folder](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/default-pipeline/databricks/notebooks).
+
+The `2-parse-games` notebook is the most important, handling the task of parsing PGN data into Parquet format. This process involves:
 
 1. Reading Decompressed Data: The parsing process starts by reading the decompressed PGN data file into a DataFrame, where each row represents a single line from the original file.
 
@@ -63,11 +64,12 @@ In the `2-parse-games` notebook, the parsing process involves several key steps 
 
 
 
-This pivot operation can be computationally expensive as it requires sorting the entire dataset to correctly assign the GameID to each line. In the background, Spark moves (or shuffles) the data into a single partition, which can lead to massive data spills and significantly slow down processing time due to the dataset's size.
+This pivot operation, while necessary, can be computationally expensive as it requires sorting the entire dataset to assign the correct GameID to each line. To perform this sorting task, Spark needs to move (or shuffle) all records into a single partition. Considering the large size of the dataset, this can lead to massive data spills and significantly slow down processing time.
 
-To address this issue, the data file is split into smaller chunks during the decompression step in the `1-decompress-file` notebook. These chunks are then passed to the `2-parse-games` notebook for parsing. The idea is that each chunk will still be parsed in a single partition but since their size is now significantly smaller, Spark can handle them efficiently without spilling.
+To address this issue, the pipeline implements two key optimizations:
 
-Additionally, the `concurrent.futures` module is used to process these chunks in parallel. This approach effectively distributes parallel jobs to all nodes at the same time, ensuring each node is occupied with one chunk of data at a time, optimizing for processing efficiency.
+- Data Chunking: In the `1-decompress-file` notebook, the data file is split into smaller, more manageable chunks during the decompression step. These chunks are then passed to the `2-parse-games` notebook for parsing. The idea is that each chunk will still be parsed in a single partition but since their size is now significantly smaller, Spark can handle them efficiently without the risk of spilling.
+- Parallel Processing: The `concurrent.futures` module is utilized to process these chunks in parallel. This ensures optimal resource utilization across all available nodes, with each node handling one data chunk at a time.
 
 ## Application
 
