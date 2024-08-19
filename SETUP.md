@@ -1,4 +1,4 @@
-The setup process for this data pipeline involves the following steps:
+To recreate this data pipeline, follow these steps:
 
 1. Deploy Azure resources using the provided ARM template.
 2. Enable Unity Catalog in the created Databricks workspace.

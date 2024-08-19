@@ -88,4 +88,4 @@ Addtionally, if you're interested in "Guess the ELO", feel free to check out [th
 
 ## Usage
 
-[You can find the setup guide here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/)
+[You can find the setup guide here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/blob/main/SETUP.md)
