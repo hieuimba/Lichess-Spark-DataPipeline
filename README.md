@@ -1,5 +1,7 @@
 # Lichess-Spark-DataPipeline
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 ## Description
 
 This project is a data pipeline designed to extract and parse monthly chess games from the [Lichess database](https://database.lichess.org/).
