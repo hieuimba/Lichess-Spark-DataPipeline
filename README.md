@@ -21,6 +21,8 @@ This data pipeline aims to address these issues by providing the following featu
 
 This solution streamlines the handling of Lichess's monthly data files, making the data more accessible and manageable for developers and researchers.
 
+![Frame 36359](https://github.com/user-attachments/assets/fd3f11cb-e94d-4a3e-afc5-d5d12009f913)
+
 ## Technologies used
 
 - Spark Databricks for data processing
