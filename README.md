@@ -70,7 +70,7 @@ This pivot operation, while necessary, can be computationally expensive as it re
 To address this issue, the pipeline implements two key optimizations:
 
 - Data Chunking: In the `1-decompress-file` notebook, the data file is split into smaller, more manageable chunks during the decompression step. These chunks are then passed to the `2-parse-games` notebook for parsing. The idea is that each chunk will still be parsed in a single partition but since their size is now significantly smaller, Spark can handle them efficiently without the risk of spilling.
-- Parallel Processing: The `concurrent.futures` module is utilized to process these chunks in parallel. This ensures optimal resource utilization across all available nodes, with each node handling one data chunk at a time.
+- Parallel Processing: The `concurrent.futures` module is utilized to process these chunks in parallel. This ensures optimal resource utilization across all available cores within each node, with each core handling one data chunk at a time.
 
 ## Application
 
