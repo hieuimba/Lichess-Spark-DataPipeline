@@ -88,7 +88,7 @@ For “Guess the ELO”, I made some modifications to the default pipeline:
 
 The modified notebooks are provided [here](https://github.com/hieuimba/Lichess-Spark-DataPipeline/tree/main/guess-the-elo-pipeline/databricks/notebooks).
 
-Addtionally, if you're interested in "Guess the ELO", feel free to check out [the game here](https://hieuimba.itch.io/guess-the-elo) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
+Addtionally, if you're interested in "Guess the ELO", feel free to check out [the game here](https://guesstheelo.com) and [its source code](https://github.com/hieuimba/Guess-The-ELO).
 
 ## Usage
 
