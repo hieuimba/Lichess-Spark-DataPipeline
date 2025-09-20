@@ -1,0 +1,27 @@
+{
+	"name": "HttpServer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://uhvpueqfesulfxzxdhsc.supabase.co/rest/v1/games",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"apiKey": {
+					"type": "SecureString",
+					"value": "**********"
+				},
+				"Authorization": {
+					"type": "SecureString",
+					"value": "**********"
+				},
+				"Prefer": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		}
+	}
+}
