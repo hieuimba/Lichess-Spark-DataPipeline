@@ -83,8 +83,8 @@
 				}
 			},
 			{
-				"name": "Lookup URL",
-				"type": "Lookup",
+				"name": "Update Config",
+				"type": "WebActivity",
 				"dependsOn": [
 					{
 						"activity": "pl_copy_games_to_mongodb",
@@ -102,50 +102,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "ds_config",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": "la-update-blob-url.txt"
-						}
-					},
-					"firstRowOnly": true
-				}
-			},
-			{
-				"name": "Update Config",
-				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "Lookup URL",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
 					"method": "POST",
 					"url": {
-						"value": "@activity('Lookup URL').output.firstRow.Prop_0",
+						"value": "https://prod-05.canadacentral.logic.azure.com:443/workflows/d50a34efcb454919a803e10515137f54/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=f7ZXlqQCMQW3XmVhYhyBDTHNBemadbRDwr9mo_sdJ8c",
 						"type": "Expression"
 					},
 					"body": {
