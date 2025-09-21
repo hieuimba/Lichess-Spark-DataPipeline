@@ -312,7 +312,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"method": "GET"
+					"method": "GET",
+					"url": {
+						"value": "@pipeline().globalParameters.url_split_collection",
+						"type": "Expression"
+					}
 				}
 			}
 		],
