@@ -5,6 +5,8 @@
 			{
 				"name": "pl_download_games_to_raw",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -27,6 +29,8 @@
 			{
 				"name": "pl_parse_games_in_databricks",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "pl_download_games_to_raw",
@@ -56,6 +60,8 @@
 			{
 				"name": "pl_copy_games_to_mongodb",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "pl_parse_games_in_databricks",
@@ -87,7 +93,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "pl_copy_games_to_mongodb",
+						"activity": "la_update_config",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -104,12 +110,52 @@
 				"typeProperties": {
 					"method": "POST",
 					"url": {
-						"value": "@pipeline().globalParameters.la_update_config",
+						"value": "@activity('la_update_config').output.firstRow.Prop_0",
 						"type": "Expression"
 					},
 					"body": {
 						"value": "{\n    \"Month\": \"@{pipeline().parameters.Month}\"\n}\n",
 						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "la_update_config",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "pl_copy_games_to_mongodb",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_config",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "la_update_config.txt"
+						}
 					}
 				}
 			}
