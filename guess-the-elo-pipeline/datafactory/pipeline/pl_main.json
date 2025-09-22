@@ -5,8 +5,6 @@
 			{
 				"name": "pl_download_games_to_raw",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -29,8 +27,6 @@
 			{
 				"name": "pl_parse_games_in_databricks",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "pl_download_games_to_raw",
@@ -60,8 +56,6 @@
 			{
 				"name": "pl_copy_games_to_mongodb",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "pl_parse_games_in_databricks",
