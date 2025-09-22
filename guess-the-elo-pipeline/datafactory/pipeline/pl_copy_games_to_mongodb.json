@@ -297,7 +297,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Gold Games to Mongo",
+						"activity": "url_split_collection",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -314,8 +314,48 @@
 				"typeProperties": {
 					"method": "GET",
 					"url": {
-						"value": "@pipeline().globalParameters.url_split_collection",
+						"value": "@activity('url_split_collection').output.firstRow.Prop_0",
 						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "url_split_collection",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Gold Games to Mongo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_config",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "url_split_collection.txt"
+						}
 					}
 				}
 			}
